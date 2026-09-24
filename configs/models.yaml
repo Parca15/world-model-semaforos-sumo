@@ -25,6 +25,7 @@ autoencoder:                    # Experimento 0
   latent_dims: [16, 32]
   hidden: [128, 64]
   beta: 0.001                   # peso del término KL del VAE
-  lr: 0.001
-  max_epochs: 100
-  patience: 10
+  lr: 0.003
+  batch_size: 1024              # modelo pequeño: lotes grandes para que entrenar en CPU sea viable
+  max_epochs: 60
+  patience: 8

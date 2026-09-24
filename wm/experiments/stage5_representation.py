@@ -37,11 +37,12 @@ def train_autoencoders(cfg: dict) -> tuple[pd.DataFrame, dict[str, str]]:
             set_seed(0)
             model = StateAE(ds.state_dim, z, cfg["hidden"], variational)
             model, info = fit_ae(model, train_s, val_s, cfg["lr"], cfg["beta"] if variational else 0.0,
-                                 cfg["max_epochs"], cfg["patience"])
+                                 cfg["max_epochs"], cfg["patience"], batch_size=cfg["batch_size"])
             path = run_dir("exp0") / f"{kind.lower()}{z}.pt"
             torch.save({"model": model, "info": info}, path)
             rows.append({"tipo": kind, "z": z, "val_recon_mse": info["val_recon_mse"], "épocas": info["epochs"],
                          "path": str(path)})
+            print(f"    ({info['epochs']} épocas)", flush=True)
             print(f"  {kind} z={z}: MSE de reconstrucción (val) = {info['val_recon_mse']:.4f}")
         df_kind = pd.DataFrame([r for r in rows if r["tipo"] == kind])
         best[kind] = df_kind.loc[df_kind.val_recon_mse.idxmin(), "path"]

@@ -22,6 +22,8 @@ from wm.models.predictor import Predictor
 
 
 class DreamVecEnv(VecEnv):
+    render_mode = None
+
     def __init__(self, predictor: Predictor, norm: NormStats, reset_windows: FlatWindows, n_envs: int,
                  episode_steps: int, reward_scale: float, rules: SignalRules | None = None, seed: int = 0):
         self.predictor, self.norm, self.windows = predictor, norm, reset_windows

@@ -3,7 +3,8 @@
 Todas comparten la interfaz `Policy`:
   control   modo del TrafficEnvironment que requieren ('agent', 'fixed' o 'actuated');
   reset()   se llama después de env.reset() (con un generador aleatorio propio y reproducible);
-  act()     devuelve la acción MultiDiscrete([2]*7) para la observación actual.
+  act()     devuelve la acción MultiDiscrete([2]*7) para la observación actual;
+  observe() recibe el `info` del paso (acción efectiva, etc.); por defecto no hace nada.
 """
 from __future__ import annotations
 
@@ -24,6 +25,9 @@ class Policy(ABC):
 
     @abstractmethod
     def act(self, obs: np.ndarray, env: TrafficEnvironment) -> np.ndarray: ...
+
+    def observe(self, info: dict) -> None:
+        pass
 
 
 class FixedTime(Policy):
