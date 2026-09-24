@@ -10,7 +10,7 @@ Cada etapa tiene **entregables** y un **criterio de salida**. No se pasa a la si
 
 1. **Una sola variable experimental:** el bloque de modelo temporal (LSTM / TSMixer / Transformer).
    Datos, representación, ventana, partición, pérdida, presupuesto de ajuste, controlador y métricas son idénticos.
-2. **Red de 7 intersecciones semaforizadas** en SUMO para todo el proyecto.
+2. **Red de 7 intersecciones semaforizadas** en SUMO (malla irregular `urban7`) para todo el proyecto.
 3. **Dataset base único y congelado (`base_v1`)**: los tres modelos se entrenan, validan y prueban
    exclusivamente sobre él. Si algo del dataset cambia, se crea `base_v2` y **se reentrenan los tres modelos**.
 4. **Partición por episodios completos**: ninguna ventana cruza episodios ni conjuntos.
@@ -75,18 +75,20 @@ world model/
 - **Criterio de salida:** `check_env.py` pasa en limpio.
 
 ### Etapa 1 — Escenario SUMO de 7 intersecciones
-- **Topología:** corredor arterial de 7 intersecciones (`J0 … J6`) en línea (1×7), cada una con 4 brazos.
-  - Arteria E–O: 2 carriles por sentido, 300 m entre intersecciones, 50 km/h.
-  - Calles transversales N–S: 1–2 carriles por sentido, brazos de 200 m.
-  - Generada con `netgenerate --grid` (7×1 con `attach-length`) y ajustada con `netconvert`.
-  - *Alternativa, si se prefiere una malla:* 7 nodos en una rejilla irregular (2×4 menos uno).
-    Se fija **una sola** topología y no se cambia después.
+- **Topología (fijada): malla urbana irregular `urban7`** de 7 intersecciones semaforizadas (`J0 … J6`), cada una con 4 brazos.
+  - Avenida principal en zigzag J0–J1–J2–J3: 2 carriles por sentido, 50 km/h, tramos de 280–335 m.
+  - Calle colectora J4–J5–J6, no paralela a la avenida: 2 carriles por sentido, 40 km/h.
+  - Conectores diagonales J0–J4, J1–J5, J2–J6 (350–470 m) y J3–N3: 1 carril por sentido, 40 km/h.
+  - Calles locales hacia las entradas/salidas (S0–S3, N4–N6): 1 carril por sentido, 30 km/h. 12 entradas en total.
+  - Bolsillo de 60 m con carril exclusivo de giro a la izquierda en cada acceso.
+  - Se genera con `python -m wm.env.scenario_builder` (nodos/vías/conexiones → `netconvert`) desde `configs/scenario.yaml`.
+    Esta topología reemplaza al corredor lineal 1×7 inicial y **no se cambia después**.
 - **Programa semafórico por intersección:** 4 fases verdes
   (NS recto, NS giro, EO recto, EO giro) + amarillo 3 s + todo rojo 1 s.
   Verde mínimo 10 s, verde máximo 60 s.
 - **Escenarios de demanda** (flujos con semilla fija):
 
-  | Escenario | Arteria (veh/h por entrada) | Transversales (veh/h por entrada) | Forma temporal |
+  | Escenario | Avenida, entradas W y E (veh/h por entrada) | Resto de entradas (veh/h por entrada) | Forma temporal |
   |---|---|---|---|
   | D1 Baja | 400 | 150 | constante |
   | D2 Media | 700 | 300 | constante |
@@ -96,9 +98,9 @@ world model/
 
   Porcentaje de giros: 70 % recto, 15 % izquierda y 15 % derecha (configurable).
 - **Duración del episodio:** 300 s de calentamiento (no se registran) + 3600 s registrados.
-- **Entregables:** `sumo/corridor7.net.xml`, `sumo/routes_D*.rou.xml`, `corridor7.sumocfg`, y una figura de la red.
+- **Entregables:** `sumo/urban7.net.xml`, `sumo/routes_D*.rou.xml`, `urban7.sumocfg`, y una figura de la red.
 - **Criterio de salida:** 5 corridas con la misma semilla dan salidas idénticas, sin teletransportes masivos
-  (menos del 1 % de los vehículos).
+  (menos del 1 % de los vehículos) y sin colisiones.
 
 ### Etapa 2 — `TrafficEnvironment` y `CustomStateBuilder`
 - **Paso de decisión:** Δt = 5 s, es decir, **720 pasos por episodio**.
