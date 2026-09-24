@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <configuration>
   <input>
-    <net-file value="corridor7.net.xml" />
-    <additional-files value="corridor7.tls.add.xml" />
+    <net-file value="urban7.net.xml" />
+    <additional-files value="urban7.tls.add.xml" />
   </input>
   <time>
     <begin value="0" />

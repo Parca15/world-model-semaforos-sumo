@@ -123,31 +123,31 @@
   <tlLogic id="J4" type="actuated" programID="actuated" offset="0">
     <param key="detector-gap" value="2.0" />
     <param key="max-gap" value="3.0" />
-    <phase duration="22" state="GGrrrrrGGrrrrr" name="NS_straight" minDur="10" maxDur="60" />
-    <phase duration="3" state="yyrrrrryyrrrrr" name="NS_straight_yellow" />
+    <phase duration="22" state="rrrrGGrrrrrGGr" name="NS_straight" minDur="10" maxDur="60" />
+    <phase duration="3" state="rrrryyrrrrryyr" name="NS_straight_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="NS_straight_allred" />
-    <phase duration="12" state="rrGrrrrrrGrrrr" name="NS_left" minDur="10" maxDur="60" />
-    <phase duration="3" state="rryrrrrrryrrrr" name="NS_left_yellow" />
+    <phase duration="12" state="rrrrrrGrrrrrrG" name="NS_left" minDur="10" maxDur="60" />
+    <phase duration="3" state="rrrrrryrrrrrry" name="NS_left_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="NS_left_allred" />
-    <phase duration="28" state="rrrGGGrrrrGGGr" name="EW_straight" minDur="10" maxDur="60" />
-    <phase duration="3" state="rrryyyrrrryyyr" name="EW_straight_yellow" />
+    <phase duration="28" state="GGGrrrrGGGrrrr" name="EW_straight" minDur="10" maxDur="60" />
+    <phase duration="3" state="yyyrrrryyyrrrr" name="EW_straight_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="EW_straight_allred" />
-    <phase duration="12" state="rrrrrrGrrrrrrG" name="EW_left" minDur="10" maxDur="60" />
-    <phase duration="3" state="rrrrrryrrrrrry" name="EW_left_yellow" />
+    <phase duration="12" state="rrrGrrrrrrGrrr" name="EW_left" minDur="10" maxDur="60" />
+    <phase duration="3" state="rrryrrrrrryrrr" name="EW_left_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="EW_left_allred" />
   </tlLogic>
   <tlLogic id="J4" type="static" programID="fixed" offset="0">
-    <phase duration="22" state="GGrrrrrGGrrrrr" name="NS_straight" />
-    <phase duration="3" state="yyrrrrryyrrrrr" name="NS_straight_yellow" />
+    <phase duration="22" state="rrrrGGrrrrrGGr" name="NS_straight" />
+    <phase duration="3" state="rrrryyrrrrryyr" name="NS_straight_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="NS_straight_allred" />
-    <phase duration="12" state="rrGrrrrrrGrrrr" name="NS_left" />
-    <phase duration="3" state="rryrrrrrryrrrr" name="NS_left_yellow" />
+    <phase duration="12" state="rrrrrrGrrrrrrG" name="NS_left" />
+    <phase duration="3" state="rrrrrryrrrrrry" name="NS_left_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="NS_left_allred" />
-    <phase duration="28" state="rrrGGGrrrrGGGr" name="EW_straight" />
-    <phase duration="3" state="rrryyyrrrryyyr" name="EW_straight_yellow" />
+    <phase duration="28" state="GGGrrrrGGGrrrr" name="EW_straight" />
+    <phase duration="3" state="yyyrrrryyyrrrr" name="EW_straight_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="EW_straight_allred" />
-    <phase duration="12" state="rrrrrrGrrrrrrG" name="EW_left" />
-    <phase duration="3" state="rrrrrryrrrrrry" name="EW_left_yellow" />
+    <phase duration="12" state="rrrGrrrrrrGrrr" name="EW_left" />
+    <phase duration="3" state="rrryrrrrrryrrr" name="EW_left_yellow" />
     <phase duration="1" state="rrrrrrrrrrrrrr" name="EW_left_allred" />
   </tlLogic>
   <tlLogic id="J5" type="actuated" programID="actuated" offset="0">

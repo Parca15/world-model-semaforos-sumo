@@ -1,22 +1,78 @@
-# Etapa 1 — escenario SUMO: corredor arterial 1x7 (J0 ... J6). Topología fija para todo el proyecto.
+# Etapa 1 — escenario SUMO: malla urbana irregular de 7 intersecciones semaforizadas (J0 ... J6).
+# Topología fija para todo el proyecto (alternativa "malla irregular" del plan, sección Etapa 1).
+#
+#                N4          N5              N6
+#                 \           |               |
+#       W2 ------ J4 ------- J5 ------------ J6 ------ E2      Calle colectora (2+2 carriles, 40 km/h)
+#                 |          /              /
+#                 |   diag. /       diagonal                      Conectores (1+1 carril)
+#                 |        /          /           N3
+#       W ------ J0 ---- J1 ------- J2 ------- J3 ------ E       Avenida principal (2+2 carriles, 50 km/h)
+#               /        |          |           |
+#             S0        S1         S2          S3                 Calles locales (1+1 carril, 30 km/h)
+#
+# La avenida zigzaguea, la colectora no es paralela a ella, los conectores son diagonales y cada brazo
+# tiene longitud y ángulo propios. Todas las intersecciones tienen 4 brazos, así que el programa de
+# 4 fases y el estado de 13 variables del plan se mantienen.
 
 network:
-  name: corridor7
-  n_intersections: 7
-  spacing: 300          # m entre intersecciones de la arteria
-  attach_length: 200    # m de los brazos de entrada/salida (transversales y extremos de la arteria)
-  arterial:
-    lanes: 2            # carriles por sentido
-    speed: 13.89        # m/s (50 km/h)
-  cross:
-    lanes: 1            # carriles por sentido en las transversales N-S
-    speed: 11.11        # m/s (40 km/h)
+  name: urban7
+  road_classes:           # carriles por sentido, velocidad (m/s) y prioridad de netconvert
+    avenue:    {lanes: 2, speed: 13.89, priority: 4, label: Avenida principal}
+    collector: {lanes: 2, speed: 11.11, priority: 3, label: Calle colectora}
+    connector: {lanes: 1, speed: 11.11, priority: 2, label: Conector}
+    local:     {lanes: 1, speed: 8.33,  priority: 1, label: Calle local}
+  tls_nodes:              # coordenadas (m)
+    J0: [0, 0]
+    J1: [280, 30]
+    J2: [610, -20]
+    J3: [900, 60]
+    J4: [120, 330]
+    J5: [470, 360]
+    J6: [820, 400]
+  fringe_nodes:           # entradas/salidas de la red
+    W:  [-220, -40]
+    E:  [1130, 90]
+    W2: [-120, 300]
+    E2: [1060, 440]
+    S0: [-30, -220]
+    S1: [300, -200]
+    S2: [640, -230]
+    S3: [880, -170]
+    N3: [1010, 270]
+    N4: [90, 560]
+    N5: [500, 590]
+    N6: [850, 630]
+  links:                  # vías de doble sentido: [nodo A, nodo B, clase]
+    - [W, J0, avenue]
+    - [J0, J1, avenue]
+    - [J1, J2, avenue]
+    - [J2, J3, avenue]
+    - [J3, E, avenue]
+    - [W2, J4, collector]
+    - [J4, J5, collector]
+    - [J5, J6, collector]
+    - [J6, E2, collector]
+    - [J0, J4, connector]
+    - [J1, J5, connector]
+    - [J2, J6, connector]
+    - [J3, N3, connector]
+    - [S0, J0, local]
+    - [S1, J1, local]
+    - [S2, J2, local]
+    - [S3, J3, local]
+    - [J4, N4, local]
+    - [J5, N5, local]
+    - [J6, N6, local]
   left_turn_pocket:
-    lanes: 1            # carril exclusivo de giro a la izquierda en cada acceso (netconvert --turn-lanes)
+    lanes: 1            # carril exclusivo de giro a la izquierda en cada acceso a un semáforo
     length: 60          # m
+  # Entradas de la avenida (columna "Arteria" de la tabla de demandas); el resto son transversales.
+  arterial_entries: [W, E]
 
 tls:
   # 4 fases verdes: 0 NS recto(+derecha), 1 NS giro izq., 2 EO recto(+derecha), 3 EO giro izq.
+  # "EO" es el par de brazos opuestos más cercano a la horizontal en cada cruce; "NS", el otro.
   # Cada verde va seguido de amarillo y todo rojo.
   yellow: 3
   all_red: 1

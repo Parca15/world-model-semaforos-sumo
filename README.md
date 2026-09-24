@@ -34,30 +34,38 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 9 | Evaluación final | — |
 | 10 | Análisis y redacción | — |
 
-## Etapa 1 — escenario `corridor7`
+## Etapa 1 — escenario `urban7` (malla urbana irregular)
 
 ```bash
 python -m wm.env.scenario_builder        # regenera sumo/ desde configs/scenario.yaml
-python scripts/validate_scenario.py      # 5 corridas por demanda: determinismo + teletransportes
+python scripts/validate_scenario.py      # 5 corridas por demanda: determinismo, teletransportes y colisiones
 ```
 
-- Corredor 1×7 (`J0…J6`), 300 m entre cruces, brazos de 200 m. Arteria de 2 carriles por sentido (50 km/h),
-  transversales de 1 carril (40 km/h). Cada acceso tiene un bolsillo de 60 m con carril exclusivo de giro a la izquierda.
+- 7 intersecciones semaforizadas de 4 brazos en una malla irregular (no un corredor recto):
+  una **avenida principal** que zigzaguea (J0–J1–J2–J3, 2+2 carriles, 50 km/h), una **calle colectora** al norte,
+  no paralela a la avenida (J4–J5–J6, 2+2 carriles, 40 km/h), **conectores diagonales** entre ambas
+  (J0–J4, J1–J5, J2–J6, 1+1 carril) y **calles locales** de distinto largo y ángulo (1+1 carril, 30 km/h).
+  12 entradas/salidas. Cada acceso tiene un bolsillo de 60 m con carril exclusivo de giro a la izquierda.
+- Los movimientos se derivan de la geometría: en cada cruce los brazos se emparejan en dos ejes de brazos opuestos
+  ("EO" = el más horizontal) y de ahí salen recto/izquierda/derecha para conexiones, fases y rutas.
 - 4 fases verdes (NS recto+der., NS izq., EO recto+der., EO izq.) + amarillo 3 s + todo rojo 1 s.
-  Programas `fixed` (ciclo de 90 s, activo por defecto) y `actuated` (verde 10–60 s) en `corridor7.tls.add.xml`.
+  Programas `fixed` (ciclo de 90 s, activo por defecto) y `actuated` (verde 10–60 s).
 - Demanda Poisson por ruta (giros 70/15/15 en cada cruce), constante a trozos cada 300 s.
 
 Validación con tiempo fijo y semilla 1 (5 corridas por demanda, salidas idénticas en todas):
 
-| Demanda | Vehículos insertados | Teletransportes | Espera media (s) | Viaje medio (s) |
-|---|---|---|---|---|
-| D1 Baja | 3167 | 0 | 49.2 | 117.4 |
-| D2 Media | 6031 | 0 | 53.6 | 122.7 |
-| D3 Alta | 8897 | 0 | 95.5 | 173.9 |
-| D4 Pico | 6262 | 0 | 70.0 | 142.6 |
-| D5 OOD | 7152 | 0 | 58.9 | 129.8 |
+| Demanda | Vehículos insertados | Teletransportes | Colisiones | Espera media (s) | Viaje medio (s) |
+|---|---|---|---|---|---|
+| D1 Baja | 2458 | 0 | 0 | 67.8 | 171.8 |
+| D2 Media | 4719 | 0 | 0 | 77.2 | 186.3 |
+| D3 Alta | 6782 (de 7129 cargados) | 0 | 0 | 162.2 | 290.1 |
+| D4 Pico | 4960 | 0 | 0 | 118.5 | 235.9 |
+| D5 OOD | 5577 | 0 | 0 | 91.8 | 204.8 |
 
-![Red corridor7](results/figures/corridor7_network.png)
+D3 queda cerca de saturación con tiempo fijo (347 vehículos no alcanzan a entrar): es el escenario donde un
+controlador adaptativo tiene más margen de mejora.
+
+![Red urban7](results/figures/urban7_network.png)
 
 ## Etapa 2 — `TrafficEnvironment` y `CustomStateBuilder`
 

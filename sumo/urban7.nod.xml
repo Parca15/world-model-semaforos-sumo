@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<nodes>
+  <node id="J0" x="0" y="0" type="traffic_light" tl="J0" />
+  <node id="J1" x="280" y="30" type="traffic_light" tl="J1" />
+  <node id="J2" x="610" y="-20" type="traffic_light" tl="J2" />
+  <node id="J3" x="900" y="60" type="traffic_light" tl="J3" />
+  <node id="J4" x="120" y="330" type="traffic_light" tl="J4" />
+  <node id="J5" x="470" y="360" type="traffic_light" tl="J5" />
+  <node id="J6" x="820" y="400" type="traffic_light" tl="J6" />
+  <node id="W" x="-220" y="-40" type="priority" />
+  <node id="E" x="1130" y="90" type="priority" />
+  <node id="W2" x="-120" y="300" type="priority" />
+  <node id="E2" x="1060" y="440" type="priority" />
+  <node id="S0" x="-30" y="-220" type="priority" />
+  <node id="S1" x="300" y="-200" type="priority" />
+  <node id="S2" x="640" y="-230" type="priority" />
+  <node id="S3" x="880" y="-170" type="priority" />
+  <node id="N3" x="1010" y="270" type="priority" />
+  <node id="N4" x="90" y="560" type="priority" />
+  <node id="N5" x="500" y="590" type="priority" />
+  <node id="N6" x="850" y="630" type="priority" />
+</nodes>

@@ -1,4 +1,4 @@
-"""TrafficEnvironment — entorno gymnasium sobre SUMO para el corredor de 7 intersecciones.
+"""TrafficEnvironment — entorno gymnasium sobre SUMO para la malla urbana de 7 intersecciones.
 
 * Paso de decisión Δt = 5 s -> 720 pasos por episodio (tras 300 s de calentamiento con tiempo fijo).
 * Acción por intersección: 0 = mantener fase, 1 = pasar a la siguiente fase
@@ -61,12 +61,13 @@ class TrafficEnvironment(gym.Env):
         self.yellow, self.all_red = t["yellow"], t["all_red"]
         self.min_green, self.max_green = t["min_green"], t["max_green"]
         self.demand, self.control, self.backend = demand, control, backend
+        self.net_name: str = scen["network"]["name"]
         self.extra_args = sumo_args or []
 
         n = len(self.tls_ids)
         self.action_space = gym.spaces.MultiDiscrete([2] * n)
         self.observation_space = gym.spaces.Box(0.0, np.inf, shape=(n, N_FEATURES), dtype=np.float32)
-        self.builder = CustomStateBuilder(str(SUMO_DIR / "corridor7.net.xml"), self.tls_ids)
+        self.builder = CustomStateBuilder(str(SUMO_DIR / f"{self.net_name}.net.xml"), self.tls_ids)
         self.sim = None
         self.phases: list[PhaseState] = []
 
@@ -74,7 +75,7 @@ class TrafficEnvironment(gym.Env):
     def _start(self, seed: int) -> None:
         global _libsumo_in_use
         sumo_home()
-        cmd = [sumo_binary("sumo"), "-c", str(SUMO_DIR / "corridor7.sumocfg"),
+        cmd = [sumo_binary("sumo"), "-c", str(SUMO_DIR / f"{self.net_name}.sumocfg"),
                "-r", str(SUMO_DIR / f"routes_{self.demand}.rou.xml"),
                "--seed", str(seed), "--end", str(self.warmup + self.episode_seconds),
                "--waiting-time-memory", "100000", "--no-step-log", "true", "--no-warnings", "true",
