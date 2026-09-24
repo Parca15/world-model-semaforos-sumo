@@ -51,10 +51,10 @@ def main() -> int:
     cfg = load_config("ppo")
     t0 = time.time()
     with Pool(max_workers(), maxtasksperchild=1) as pool:
-        rows = pool.map(train_seed, cfg["seeds"], chunksize=1)
+        rows = pool.map(train_seed, cfg["sumo"]["train_seeds"], chunksize=1)
     pd.DataFrame(rows).to_csv(results_path("stage8_sumo_ppo.csv"), index=False)
-    ok = all((run_dir("ppo_sumo", f"seed{s}") / "ppo.zip").exists() for s in cfg["seeds"])
-    print(f"Criterio de salida Etapa 8 (política × {len(cfg['seeds'])} semillas): "
+    ok = all((run_dir("ppo_sumo", f"seed{s}") / "ppo.zip").exists() for s in cfg["sumo"]["train_seeds"])
+    print(f"Criterio de salida Etapa 8 (política × {len(cfg['sumo']['train_seeds'])} semillas): "
           f"{'CUMPLIDO' if ok else 'NO CUMPLIDO'} ({(time.time() - t0) / 60:.1f} min)")
     return 0 if ok else 1
 

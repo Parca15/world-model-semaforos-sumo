@@ -67,10 +67,12 @@ def control_job(job: tuple[str, int, str, int]) -> dict:
 
 def run_control(workers: int) -> pd.DataFrame:
     ev = load_config("eval")
-    seeds = load_config("ppo")["seeds"]
+    ppo = load_config("ppo")
+    seeds = {"PPO directo": ppo["sumo"]["train_seeds"], "WM + TSMixer": ppo["seeds"],
+             "WM + TSMixer + planificación": ppo["seeds"]}
     scen = [(d, s) for d in ev["scenarios"]["demands"] for s in ev["scenarios"]["seeds"]]
     jobs = [(c, 0, d, s) for c in REFERENCE for d, s in scen]
-    jobs += [(c, k, d, s) for c in LEARNED for k in seeds for d, s in scen]
+    jobs += [(c, k, d, s) for c in LEARNED for k in seeds[c] for d, s in scen]
     # Reanudable: cada episodio terminado se agrega a un .jsonl y no se repite.
     partial = results_path("stage9_control_episodes.partial.jsonl")
     rows = [json.loads(line) for line in partial.read_text(encoding="utf-8").splitlines()] if partial.exists() else []

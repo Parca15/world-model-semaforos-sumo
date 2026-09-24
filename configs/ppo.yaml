@@ -15,7 +15,7 @@ hyperparams:
 
 observation: normalized_state   # s_t normalizado con norm_stats del dataset base, aplanado (91)
 reward_scale: 10.0              # r_PPO = Σ_i r_t^i / reward_scale (igual en ambos entornos)
-seeds: [0, 1, 2, 3, 4]
+seeds: [0, 1, 2, 3, 4]          # políticas en el sueño (una por semilla del TSMixer)
 
 dream:
   n_envs: 16                    # entornos imaginados en lote (una sola pasada del modelo)
@@ -30,6 +30,7 @@ sumo:
   total_timesteps: 57600
   demands: [D1, D2, D3, D4]
   seeds: [1, 2, 3, 4]           # mismas semillas de simulación que train del dataset
+  train_seeds: [0, 1, 2]        # semillas de PPO directo (3 en vez de 5 por costo: 57 600 pasos de SUMO cada una)
 
 planning:                        # planificación por imaginación (complementaria)
   n_candidates: 16               # acciones conjuntas candidatas por decisión (incluye mantener todo y la acción de PPO)

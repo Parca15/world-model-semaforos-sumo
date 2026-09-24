@@ -36,7 +36,10 @@ def latent_flat(fw: FlatWindows, ae, state_dim: int) -> FlatWindows:
 
 
 def _job_key(job: dict) -> str:
-    return json.dumps({k: v for k, v in job.items() if k not in ("out_dir", "threads")}, sort_keys=True)
+    """Identidad del trabajo: sus parámetros más el protocolo de entrenamiento común (p. ej. la pérdida)."""
+    train = {k: v for k, v in load_config("train").items() if k not in ("search", "final_seeds")}
+    return json.dumps({"job": {k: v for k, v in job.items() if k not in ("out_dir", "threads")},
+                       "train": train}, sort_keys=True)
 
 
 def run_job(job: dict) -> dict:

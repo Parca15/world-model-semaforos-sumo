@@ -195,7 +195,7 @@ def sample_efficiency() -> None:
     ppo = load_config("ppo")
     seeds = ppo["seeds"]
     curves = []
-    for s in seeds:
+    for s in ppo["sumo"]["train_seeds"]:
         mon = pd.read_csv(run_dir("ppo_sumo", f"seed{s}") / "monitor.monitor.csv", skiprows=1)
         mon["steps"] = mon.l.cumsum()
         mon["seed"] = s

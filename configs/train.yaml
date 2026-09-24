@@ -5,7 +5,7 @@ loss:
   rollout_k: 5            # pérdida multi-paso (opción del plan, igual para cualquier modelo); 1 = solo 1 paso
 optimizer: adamw
 batch_size: 256
-max_epochs: 200
+max_epochs: 60            # plan: 200; con el early stopping los modelos paran antes (≈ época 40) en CPU
 patience: 10              # early stopping sobre la pérdida de validación
 # Adaptación a CPU: una "época" es una muestra aleatoria de ventanas de train (las ventanas consecutivas
 # se solapan en W-1 pasos) y la pérdida de validación se mide en una submuestra fija.
@@ -14,7 +14,7 @@ val_max_samples: 4000
 search:
   n_configs: 12           # presupuesto de ajuste de hiperparámetros
   seed: 2024              # semilla de la búsqueda aleatoria
-  max_epochs: 60          # tope durante la búsqueda (la configuración final usa max_epochs)
+  max_epochs: 15          # búsqueda de baja fidelidad: se ordenan las 12 configuraciones con 15 épocas
 final_seeds: [0, 1, 2, 3, 4]
 
 eval:
