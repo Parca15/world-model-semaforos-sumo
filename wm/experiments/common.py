@@ -49,8 +49,9 @@ def dataset(split: str, h: int = 1) -> WindowDataset:
 
 
 @lru_cache(maxsize=None)
-def flat(split: str) -> FlatWindows:
-    return dataset(split, 1).flat()
+def flat(split: str, k: int = 1) -> FlatWindows:
+    """Vista de entrenamiento; con k > 1 solo ventanas con k pasos futuros dentro del episodio."""
+    return dataset(split, k).flat()
 
 
 @lru_cache(maxsize=None)
@@ -70,7 +71,7 @@ def train_config(**overrides) -> TrainConfig:
     t = load_config("train")
     cfg = TrainConfig(batch_size=t["batch_size"], max_epochs=t["max_epochs"], patience=t["patience"],
                       reward_weight=t["loss"]["reward_weight"], samples_per_epoch=t["samples_per_epoch"],
-                      val_max_samples=t["val_max_samples"])
+                      val_max_samples=t["val_max_samples"], rollout_k=t["loss"]["rollout_k"])
     for k, v in overrides.items():
         setattr(cfg, k, v)
     return cfg

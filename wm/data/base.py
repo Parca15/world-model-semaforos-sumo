@@ -130,11 +130,18 @@ class FlatWindows:
     def __len__(self) -> int:
         return len(self.ends)
 
-    def batch(self, idx: np.ndarray) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def batch(self, idx: np.ndarray, k: int = 1) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """x [B, W, input_dim] y los k objetivos siguientes: Δs [B, k, state_dim] (o [B, state_dim] si k = 1),
+        r [B, k, n_tls] (o [B, n_tls]). Con k > 1 las filas e+1..e+k-1 aportan las acciones futuras reales;
+        la vista debe construirse con H >= k para que nunca crucen el final del episodio."""
         e = self.ends[idx]
         rows = e[:, None] + np.arange(-self.W + 1, 1)
-        return (torch.from_numpy(self.rows[rows]), torch.from_numpy(self.delta[e]),
-                torch.from_numpy(self.reward[e]))
+        if k == 1:
+            return (torch.from_numpy(self.rows[rows]), torch.from_numpy(self.delta[e]),
+                    torch.from_numpy(self.reward[e]))
+        fut = e[:, None] + np.arange(k)
+        return (torch.from_numpy(self.rows[rows]), torch.from_numpy(self.delta[fut]),
+                torch.from_numpy(self.reward[fut]), torch.from_numpy(self.rows[fut]))
 
 
 def dataset_root(version: str, data_dir: Path = DATA_DIR) -> Path:

@@ -1,7 +1,9 @@
 """Bucle de entrenamiento común (Etapa 6): el mismo para cualquier modelo temporal o baseline neuronal.
 
 Pérdida MSE(Δs) + λ·MSE(r) en espacio normalizado, AdamW, batch 256, early stopping sobre la pérdida de
-validación. Una "época" es una muestra aleatoria de `samples_per_epoch` ventanas de train (las ventanas
+validación. Con `rollout_k` > 1 (pérdida multi-paso, opción del plan) el modelo avanza k pasos reutilizando sus
+propias predicciones como entrada (con las acciones reales) y la pérdida promedia el error de estado y de
+recompensa en los k pasos; con k = 1 coincide con la pérdida a 1 paso. Una "época" es una muestra aleatoria de `samples_per_epoch` ventanas de train (las ventanas
 consecutivas se solapan en W−1 pasos, así que recorrerlas todas por época es redundante en CPU).
 """
 from __future__ import annotations
@@ -33,6 +35,7 @@ class TrainConfig:
     val_max_samples: int | None = None     # submuestra fija de validación (None = todas)
     seed: int = 0
     threads: int = 1
+    rollout_k: int = 1                     # pasos de la pérdida multi-paso (1 = pérdida a 1 paso)
 
 
 @dataclass
@@ -50,9 +53,24 @@ class FitResult:
 
 
 def _loss(model, flat: FlatWindows, idx, cfg: TrainConfig, mse=nn.functional.mse_loss):
-    x, d, r = flat.batch(idx)
-    pd_, pr = model(x)
-    ld, lr_ = mse(pd_, d), mse(pr, r)
+    if cfg.rollout_k == 1:
+        x, d, r = flat.batch(idx)
+        pd_, pr = model(x)
+        ld, lr_ = mse(pd_, d), mse(pr, r)
+        return ld + cfg.reward_weight * lr_, ld, lr_
+    x, d, r, fut_rows = flat.batch(idx, cfg.rollout_k)
+    sd = d.shape[-1]
+    s_true = x[:, -1:, :sd] + torch.cumsum(d, dim=1)         # s_{t+1..t+k} reales
+    ld = lr_ = 0.0
+    for j in range(cfg.rollout_k):
+        pd_, pr = model(x)
+        s_pred = x[:, -1, :sd] + pd_
+        ld = ld + mse(s_pred, s_true[:, j])
+        lr_ = lr_ + mse(pr, r[:, j])
+        if j < cfg.rollout_k - 1:
+            row = torch.cat([s_pred, fut_rows[:, j + 1, sd:]], dim=1)[:, None]
+            x = torch.cat([x[:, 1:], row], dim=1)
+    ld, lr_ = ld / cfg.rollout_k, lr_ / cfg.rollout_k
     return ld + cfg.reward_weight * lr_, ld, lr_
 
 

@@ -2,6 +2,7 @@
 
 loss:
   reward_weight: 1.0      # λ en MSE(Δs) + λ·MSE(r)
+  rollout_k: 5            # pérdida multi-paso (opción del plan, igual para cualquier modelo); 1 = solo 1 paso
 optimizer: adamw
 batch_size: 256
 max_epochs: 200

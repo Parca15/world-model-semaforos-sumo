@@ -79,3 +79,24 @@ def test_stats_helpers():
     assert lo < mean < hi
     rows = paired_comparisons("A", {"A": np.arange(10) * 1.0, "B": np.arange(10) + 5.0})
     assert rows[0]["referencia_mejor"] and rows[0]["p_holm"] < 0.05
+
+
+def test_multistep_loss_uses_future_actions_and_is_finite():
+    from wm.data.base import FlatWindows
+    from wm.train.trainer import TrainConfig, _loss
+
+    rng = np.random.default_rng(0)
+    rows = rng.normal(size=(60, SD + NT)).astype(np.float32)
+    delta = rng.normal(size=(60, SD)).astype(np.float32)
+    reward = rng.normal(size=(60, NT)).astype(np.float32)
+    fw = FlatWindows(rows, delta, reward, np.arange(W - 1, 50), W)
+    torch.manual_seed(0)
+    m = build_tsmixer(150_000).eval()
+    idx = np.arange(8)
+    one = _loss(m, fw, idx, TrainConfig(rollout_k=1))[0]
+    # con k = 5 el primer término de estado es el mismo error que a 1 paso
+    x, d, r, fut = fw.batch(idx, 5)
+    assert d.shape == (8, 5, SD) and fut.shape == (8, 5, SD + NT)
+    assert torch.allclose(fut[:, 0], torch.from_numpy(rows[fw.ends[idx]]))
+    five = _loss(m, fw, idx, TrainConfig(rollout_k=5))[0]
+    assert torch.isfinite(five) and not torch.isclose(one, five)

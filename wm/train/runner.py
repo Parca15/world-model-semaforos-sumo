@@ -50,7 +50,8 @@ def run_job(job: dict) -> dict:
     torch.set_num_threads(threads)
     set_seed(job["seed"])
     out.mkdir(parents=True, exist_ok=True)
-    train, val = flat("train"), flat("val")
+    k = load_config("train")["loss"]["rollout_k"]
+    train, val = flat("train", k), flat("val", k)
     state_dim, n_tls = train.delta.shape[1], train.reward.shape[1]
     if job.get("ae_path"):
         ae = torch.load(job["ae_path"], map_location="cpu")["model"].eval()
