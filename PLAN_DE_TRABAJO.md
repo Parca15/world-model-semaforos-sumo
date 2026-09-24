@@ -130,6 +130,8 @@ world model/
   están en rangos físicos válidos.
 
 ### Etapa 3 — Dataset base `base_v1` (congelado)
+> **Versión vigente: `base_v2`** (`base_v1` se descartó antes de usarse; ver `data/DATASETS.md`).
+> En el resto del plan, "`base_v1`" se refiere al dataset base vigente.
 Esta es la base sobre la que se entrenan **todos** los modelos (AE/VAE, LSTM, TSMixer, Transformer y el Dream Environment).
 
 **3.1 Políticas de recolección.** Hacen falta acciones variadas para que el modelo aprenda el efecto de cada acción.

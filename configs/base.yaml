@@ -2,7 +2,7 @@
 # Nada de este archivo cambia entre LSTM / TSMixer / Transformer.
 
 project: world-model-semaforos-sumo
-dataset_version: base_v1
+dataset_version: base_v2
 
 network:
   n_intersections: 7

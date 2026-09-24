@@ -8,8 +8,8 @@ from wm.data.collect import EpisodeSpec, run_episode
 SHORT = 200
 
 
-def spec(kind, policy="PX", seed=1, **params):
-    return EpisodeSpec(episode="ep_test", demand="D2", policy=policy, policy_kind=kind, seed=seed, split="train",
+def spec(kind, policy="PX", seed=1, demand="D2", **params):
+    return EpisodeSpec(episode="ep_test", demand=demand, policy=policy, policy_kind=kind, seed=seed, split="train",
                        policy_params=params)
 
 
@@ -44,3 +44,24 @@ def test_max_pressure_beats_random_on_waiting():
 def test_unknown_policy():
     with pytest.raises(ValueError):
         make_policy("nope")
+
+
+def test_pressure_sensor_covers_upstream_queue():
+    """La cola de entrada incluye el tramo aguas arriba del bolsillo (regresión: antes solo se contaban 60 m)."""
+    from wm.env.pressure import PressureSensor
+    from wm.env.traffic_env import make_env
+
+    env = make_env(demand="D2", episode_seconds=50)
+    env.reset(seed=1)
+    sensor = PressureSensor(env.sim, env.tls_ids)
+    through = [ins for per in sensor.phase_links for mv in per for ins, _ in mv if len(ins) == 2]
+    env.close()
+    # p. ej. el carril "W_J0_in_1" (bolsillo) se complementa con "W_J0_1" (tramo aguas arriba)
+    assert through and all(up == pocket.replace("_in_", "_") for pocket, up in through)
+
+
+def test_max_pressure_beats_fixed_time_under_high_demand():
+    """Regresión: una heurística de presión razonable debe superar al tiempo fijo en D3."""
+    mp = run_episode(spec("max_pressure", demand="D3", epsilon=0.0), episode_seconds=1200)
+    fx = run_episode(spec("fixed_time", demand="D3"), episode_seconds=1200)
+    assert mp.raw_metrics[..., 3].mean() < fx.raw_metrics[..., 3].mean()

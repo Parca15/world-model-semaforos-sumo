@@ -54,8 +54,9 @@ class RandomRestricted(Policy):
 
 
 class MaxPressure(Policy):
-    """P4: Max-Pressure cíclico. Como la acción solo permite avanzar a la fase siguiente, se cambia cuando
-    la fase actual no es la de mayor presión. Con probabilidad epsilon la acción es aleatoria."""
+    """P4: Max-Pressure cíclico. La acción solo permite avanzar a la fase siguiente del ciclo, así que se cambia
+    cuando esa fase tiene más presión que la actual (compararla con la mejor de todas las fases hace que la
+    política cambie en cuanto el verde mínimo lo permite). Con probabilidad epsilon la acción es aleatoria."""
 
     def __init__(self, epsilon: float = 0.1):
         self.epsilon = epsilon
@@ -69,8 +70,7 @@ class MaxPressure(Policy):
         action = np.zeros(self.n, dtype=np.int64)
         for i, ph in enumerate(env.phase_states()):
             if ph.mode == GREEN:
-                others = [pressure[i, k] for k in range(N_GREENS) if k != ph.green]
-                action[i] = int(pressure[i, ph.green] < max(others))
+                action[i] = int(pressure[i, (ph.green + 1) % N_GREENS] > pressure[i, ph.green])
         explore = self.rng.random(self.n) < self.epsilon
         action[explore] = self.rng.integers(0, 2, explore.sum())
         return action

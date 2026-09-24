@@ -1,7 +1,7 @@
 # Etapa 3 — diseño del dataset base congelado.
 # La partición por semilla está en configs/base.yaml (splits); aquí se define qué se recolecta.
 
-version: base_v1
+version: base_v2
 
 demands: [D1, D2, D3, D4]      # train / val / test
 ood_demand: D5                 # solo test_ood
