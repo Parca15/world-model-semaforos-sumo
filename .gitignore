@@ -1,0 +1,11 @@
+# Entornos
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Artefactos pesados (se versionan aparte / se regeneran)
+runs/
+data/**/episodes/
+*.pt
+*.ckpt
