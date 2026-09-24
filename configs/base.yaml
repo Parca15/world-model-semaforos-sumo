@@ -1,0 +1,28 @@
+# Invariantes del proyecto (PLAN_DE_TRABAJO.md, secciones 0 y 3).
+# Nada de este archivo cambia entre LSTM / TSMixer / Transformer.
+
+project: world-model-semaforos-sumo
+dataset_version: base_v1
+
+network:
+  n_intersections: 7
+  tls_ids: [J0, J1, J2, J3, J4, J5, J6]
+
+env:
+  delta_t: 5            # s por paso de decisión
+  warmup: 300           # s de calentamiento (no se registran)
+  episode_seconds: 3600 # s registrados -> 720 pasos
+  n_features: 13        # variables por intersección
+
+window:
+  W: 12                 # pasos de entrada (60 s)
+  H: 20                 # horizonte de evaluación multi-paso (100 s)
+
+splits:                 # partición por semilla (nunca por ventana)
+  train: [1, 2, 3, 4]
+  val: [5]
+  test: [6]
+  test_ood: [7, 8]      # solo demanda D5
+  final_eval: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+
+train_seeds: [0, 1, 2, 3, 4]  # 5 semillas por configuración final
