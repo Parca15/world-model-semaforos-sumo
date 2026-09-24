@@ -1,0 +1,7 @@
+# Finales de línea normalizados a LF en el repositorio (equipo en Windows y macOS)
+* text=auto eol=lf
+
+# Los archivos de datasets congelados no se tocan nunca: sus checksums están en MANIFEST.sha256
+data/** -text -diff
+*.npz binary
+*.parquet binary
