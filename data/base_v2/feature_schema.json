@@ -1,0 +1,99 @@
+{
+ "state_shape": [
+  "n_tls",
+  13
+ ],
+ "features": [
+  {
+   "index": 0,
+   "name": "vehicles",
+   "unit": "veh",
+   "normalized": true
+  },
+  {
+   "index": 1,
+   "name": "halting",
+   "unit": "veh",
+   "normalized": true
+  },
+  {
+   "index": 2,
+   "name": "queue_m",
+   "unit": "m",
+   "normalized": true
+  },
+  {
+   "index": 3,
+   "name": "mean_speed",
+   "unit": "m/s",
+   "normalized": true
+  },
+  {
+   "index": 4,
+   "name": "occupancy",
+   "unit": "%",
+   "normalized": true
+  },
+  {
+   "index": 5,
+   "name": "waiting_acc",
+   "unit": "s",
+   "normalized": true
+  },
+  {
+   "index": 6,
+   "name": "outflow",
+   "unit": "veh",
+   "normalized": true
+  },
+  {
+   "index": 7,
+   "name": "phase_NS_straight",
+   "unit": "-",
+   "normalized": false
+  },
+  {
+   "index": 8,
+   "name": "phase_NS_left",
+   "unit": "-",
+   "normalized": false
+  },
+  {
+   "index": 9,
+   "name": "phase_EW_straight",
+   "unit": "-",
+   "normalized": false
+  },
+  {
+   "index": 10,
+   "name": "phase_EW_left",
+   "unit": "-",
+   "normalized": false
+  },
+  {
+   "index": 11,
+   "name": "time_in_phase",
+   "unit": "s",
+   "normalized": true
+  },
+  {
+   "index": 12,
+   "name": "yellow",
+   "unit": "-",
+   "normalized": false
+  }
+ ],
+ "raw_metrics": [
+  "queue_m",
+  "halting",
+  "outflow",
+  "waiting_acc"
+ ],
+ "arrays": {
+  "states": "[T+1, n_tls, n_features] s_0..s_T (unidades originales)",
+  "actions": "[T, n_tls] acción efectiva a_t (1 = empezó un cambio de fase)",
+  "forced": "[T, n_tls] el cambio lo forzó el verde máximo",
+  "rewards": "[T, n_tls] r_t^i = -(W_{t+1}^i - W_t^i)/100",
+  "raw_metrics": "[T+1, n_tls, k] métricas en bruto (ver raw_metrics)"
+ }
+}

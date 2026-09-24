@@ -25,8 +25,8 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 0 | Entorno y esqueleto | ✅ |
 | 1 | Escenario SUMO de 7 intersecciones | ✅ |
 | 2 | `TrafficEnvironment` y `CustomStateBuilder` | ✅ |
-| 3 | Dataset `base_v1` | ⏳ |
-| 4 | Baselines | — |
+| 3 | Dataset base (`base_v2`) | ✅ |
+| 4 | Baselines | ⏳ |
 | 5 | Experimento 0 (AE/VAE) | — |
 | 6 | Modelos temporales | — |
 | 7 | Dream Environment + PPO | — |
@@ -80,3 +80,28 @@ python scripts/validate_env.py      # episodio completo (720 pasos) con acciones
 - `wm/env/state_builder.py`: estado `7×13` (vehículos, detenidos, cola, velocidad, ocupación, espera acumulada,
   flujo de salida, fase one-hot, tiempo en fase, amarillo). Recompensa `r_t^i = −(W_{t+1}^i − W_t^i)/100`.
 - Estadísticas por variable del episodio de validación: `results/stage2_env_check.csv`.
+
+## Etapa 3 — dataset base congelado (`base_v2`)
+
+```bash
+python -m wm.data.build_base              # construye data/<versión de configs/dataset.yaml> (exige árbol git limpio)
+python scripts/validate_dataset.py        # criterio de salida: checksums, fugas, solo lectura, ficha técnica
+```
+
+```python
+from wm.data.base import load_base        # ÚNICO punto de acceso a los datos
+ds = load_base("base_v2", "train", W=12, H=1)
+item = ds[0]         # x [12, 98], delta [91], reward [7]  (normalizados)
+X, dS, R = ds.arrays()
+```
+
+- 104 episodios: 4 demandas × 4 políticas × 6 semillas (train 1–4, val 5, test 6) + 8 de test-OOD (D5, semillas 7–8).
+- Políticas (`wm/control/policies.py`): P1 tiempo fijo, P2 aleatoria restringida (p = 0,2 / 0,5 según la paridad de la semilla),
+  P3 actuada de SUMO, P4 Max-Pressure cíclico con ε = 0,1.
+- Se guarda la acción **efectiva**; normalización z-score por (intersección, variable) ajustada solo con train.
+- Construcción atómica (directorio temporal → renombrar), `MANIFEST.sha256`, archivos de solo lectura y
+  `config_used.yaml` con el commit y las versiones de software. Un dataset existente nunca se sobrescribe.
+- La ficha técnica con estadísticas está en `data/base_v2/README.md`; el historial de versiones en `data/DATASETS.md`.
+- Resultados de las políticas en `base_v2` (espera acumulada media por intersección): actuada 705 s,
+  Max-Pressure 1706 s, tiempo fijo 2893 s, aleatoria 6702 s. 69 120 transiciones en train/val/test + 5760 en OOD.
+- Los episodios `.npz` no van a git (se regeneran con el comando de arriba); los metadatos y el manifiesto sí.

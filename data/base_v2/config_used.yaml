@@ -1,0 +1,308 @@
+version: base_v2
+created: '2026-09-24 01:38:44'
+git_commit: 8ea982111d4c2431a17892a68c3472b4ec159005
+git_dirty: false
+episode_seconds_override: null
+software:
+  python: 3.11.9
+  platform: Windows-10-10.0.26200-SP0
+  eclipse-sumo: 1.20.0
+  libsumo: 1.20.0
+  numpy: 1.26.4
+  pandas: 2.2.3
+  torch: 2.2.2
+  gymnasium: 0.29.1
+  stable-baselines3: 2.3.2
+configs:
+  base:
+    project: world-model-semaforos-sumo
+    dataset_version: base_v2
+    network:
+      n_intersections: 7
+      tls_ids:
+      - J0
+      - J1
+      - J2
+      - J3
+      - J4
+      - J5
+      - J6
+    env:
+      delta_t: 5
+      warmup: 300
+      episode_seconds: 3600
+      n_features: 13
+    window:
+      W: 12
+      H: 20
+    splits:
+      train:
+      - 1
+      - 2
+      - 3
+      - 4
+      val:
+      - 5
+      test:
+      - 6
+      test_ood:
+      - 7
+      - 8
+      final_eval:
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+    train_seeds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  scenario:
+    network:
+      name: urban7
+      road_classes:
+        avenue:
+          lanes: 2
+          speed: 13.89
+          priority: 4
+          label: Avenida principal
+        collector:
+          lanes: 2
+          speed: 11.11
+          priority: 3
+          label: Calle colectora
+        connector:
+          lanes: 1
+          speed: 11.11
+          priority: 2
+          label: Conector
+        local:
+          lanes: 1
+          speed: 8.33
+          priority: 1
+          label: Calle local
+      tls_nodes:
+        J0:
+        - 0
+        - 0
+        J1:
+        - 280
+        - 30
+        J2:
+        - 610
+        - -20
+        J3:
+        - 900
+        - 60
+        J4:
+        - 120
+        - 330
+        J5:
+        - 470
+        - 360
+        J6:
+        - 820
+        - 400
+      fringe_nodes:
+        W:
+        - -220
+        - -40
+        E:
+        - 1130
+        - 90
+        W2:
+        - -120
+        - 300
+        E2:
+        - 1060
+        - 440
+        S0:
+        - -30
+        - -220
+        S1:
+        - 300
+        - -200
+        S2:
+        - 640
+        - -230
+        S3:
+        - 880
+        - -170
+        N3:
+        - 1010
+        - 270
+        N4:
+        - 90
+        - 560
+        N5:
+        - 500
+        - 590
+        N6:
+        - 850
+        - 630
+      links:
+      - - W
+        - J0
+        - avenue
+      - - J0
+        - J1
+        - avenue
+      - - J1
+        - J2
+        - avenue
+      - - J2
+        - J3
+        - avenue
+      - - J3
+        - E
+        - avenue
+      - - W2
+        - J4
+        - collector
+      - - J4
+        - J5
+        - collector
+      - - J5
+        - J6
+        - collector
+      - - J6
+        - E2
+        - collector
+      - - J0
+        - J4
+        - connector
+      - - J1
+        - J5
+        - connector
+      - - J2
+        - J6
+        - connector
+      - - J3
+        - N3
+        - connector
+      - - S0
+        - J0
+        - local
+      - - S1
+        - J1
+        - local
+      - - S2
+        - J2
+        - local
+      - - S3
+        - J3
+        - local
+      - - J4
+        - N4
+        - local
+      - - J5
+        - N5
+        - local
+      - - J6
+        - N6
+        - local
+      left_turn_pocket:
+        lanes: 1
+        length: 60
+      arterial_entries:
+      - W
+      - E
+    tls:
+      yellow: 3
+      all_red: 1
+      min_green: 10
+      max_green: 60
+      fixed_time_greens:
+      - 22
+      - 12
+      - 28
+      - 12
+    episode:
+      begin: 0
+      warmup: 300
+      recorded: 3600
+      time_to_teleport: 300
+    vehicle:
+      vclass: passenger
+      emission_class: HBEFA3/PC_G_EU4
+      sigma: 0.5
+    turning:
+      straight: 0.7
+      left: 0.15
+      right: 0.15
+      min_route_prob: 0.001
+    demand_segment: 300
+    demands:
+      D1:
+        label: Baja
+        shape: constant
+        arterial:
+          W: 400
+          E: 400
+        cross: 150
+      D2:
+        label: Media
+        shape: constant
+        arterial:
+          W: 700
+          E: 700
+        cross: 300
+      D3:
+        label: Alta
+        shape: constant
+        arterial:
+          W: 1000
+          E: 1000
+        cross: 450
+      D4:
+        label: Pico
+        shape: peak
+        arterial:
+          W:
+          - 400
+          - 1100
+          E:
+          - 400
+          - 1100
+        cross:
+        - 150
+        - 500
+      D5:
+        label: OOD (solo prueba)
+        shape: constant
+        arterial:
+          W: 700
+          E: 1000
+        cross: 350
+  dataset:
+    version: base_v2
+    demands:
+    - D1
+    - D2
+    - D3
+    - D4
+    ood_demand: D5
+    policies:
+      P1:
+        kind: fixed_time
+      P2:
+        kind: random_restricted
+        p_by_seed_parity:
+          odd: 0.2
+          even: 0.5
+      P3:
+        kind: actuated
+      P4:
+        kind: max_pressure
+        epsilon: 0.1
+    collection:
+      workers: 4
+      compress: true
