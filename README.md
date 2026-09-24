@@ -23,8 +23,8 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | Etapa | Descripción | Estado |
 |---|---|---|
 | 0 | Entorno y esqueleto | ✅ |
-| 1 | Escenario SUMO de 7 intersecciones | ⏳ |
-| 2 | `TrafficEnvironment` y `CustomStateBuilder` | — |
+| 1 | Escenario SUMO de 7 intersecciones | ✅ |
+| 2 | `TrafficEnvironment` y `CustomStateBuilder` | ⏳ |
 | 3 | Dataset `base_v1` | — |
 | 4 | Baselines | — |
 | 5 | Experimento 0 (AE/VAE) | — |
@@ -33,3 +33,28 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 8 | PPO directo en SUMO | — |
 | 9 | Evaluación final | — |
 | 10 | Análisis y redacción | — |
+
+## Etapa 1 — escenario `corridor7`
+
+```bash
+python -m wm.env.scenario_builder        # regenera sumo/ desde configs/scenario.yaml
+python scripts/validate_scenario.py      # 5 corridas por demanda: determinismo + teletransportes
+```
+
+- Corredor 1×7 (`J0…J6`), 300 m entre cruces, brazos de 200 m. Arteria de 2 carriles por sentido (50 km/h),
+  transversales de 1 carril (40 km/h). Cada acceso tiene un bolsillo de 60 m con carril exclusivo de giro a la izquierda.
+- 4 fases verdes (NS recto+der., NS izq., EO recto+der., EO izq.) + amarillo 3 s + todo rojo 1 s.
+  Programas `fixed` (ciclo de 90 s, activo por defecto) y `actuated` (verde 10–60 s) en `corridor7.tls.add.xml`.
+- Demanda Poisson por ruta (giros 70/15/15 en cada cruce), constante a trozos cada 300 s.
+
+Validación con tiempo fijo y semilla 1 (5 corridas por demanda, salidas idénticas en todas):
+
+| Demanda | Vehículos insertados | Teletransportes | Espera media (s) | Viaje medio (s) |
+|---|---|---|---|---|
+| D1 Baja | 3167 | 0 | 49.2 | 117.4 |
+| D2 Media | 6031 | 0 | 53.6 | 122.7 |
+| D3 Alta | 8897 | 0 | 95.5 | 173.9 |
+| D4 Pico | 6262 | 0 | 70.0 | 142.6 |
+| D5 OOD | 7152 | 0 | 58.9 | 129.8 |
+
+![Red corridor7](results/figures/corridor7_network.png)

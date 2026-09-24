@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configuration>
+  <input>
+    <net-file value="corridor7.net.xml" />
+    <additional-files value="corridor7.tls.add.xml" />
+  </input>
+  <time>
+    <begin value="0" />
+    <end value="3900" />
+  </time>
+  <processing>
+    <time-to-teleport value="300" />
+  </processing>
+  <report>
+    <no-step-log value="true" />
+    <no-warnings value="true" />
+  </report>
+</configuration>

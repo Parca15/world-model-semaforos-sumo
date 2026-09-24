@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<nodes>
+  <node id="J0" x="0" y="0" type="traffic_light" tl="J0" />
+  <node id="N0" x="0" y="200" type="priority" />
+  <node id="S0" x="0" y="-200" type="priority" />
+  <node id="J1" x="300" y="0" type="traffic_light" tl="J1" />
+  <node id="N1" x="300" y="200" type="priority" />
+  <node id="S1" x="300" y="-200" type="priority" />
+  <node id="J2" x="600" y="0" type="traffic_light" tl="J2" />
+  <node id="N2" x="600" y="200" type="priority" />
+  <node id="S2" x="600" y="-200" type="priority" />
+  <node id="J3" x="900" y="0" type="traffic_light" tl="J3" />
+  <node id="N3" x="900" y="200" type="priority" />
+  <node id="S3" x="900" y="-200" type="priority" />
+  <node id="J4" x="1200" y="0" type="traffic_light" tl="J4" />
+  <node id="N4" x="1200" y="200" type="priority" />
+  <node id="S4" x="1200" y="-200" type="priority" />
+  <node id="J5" x="1500" y="0" type="traffic_light" tl="J5" />
+  <node id="N5" x="1500" y="200" type="priority" />
+  <node id="S5" x="1500" y="-200" type="priority" />
+  <node id="J6" x="1800" y="0" type="traffic_light" tl="J6" />
+  <node id="N6" x="1800" y="200" type="priority" />
+  <node id="S6" x="1800" y="-200" type="priority" />
+  <node id="W" x="-200" y="0" type="priority" />
+  <node id="E" x="2000" y="0" type="priority" />
+</nodes>

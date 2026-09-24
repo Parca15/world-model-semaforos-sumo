@@ -1,0 +1,73 @@
+# Etapa 1 — escenario SUMO: corredor arterial 1x7 (J0 ... J6). Topología fija para todo el proyecto.
+
+network:
+  name: corridor7
+  n_intersections: 7
+  spacing: 300          # m entre intersecciones de la arteria
+  attach_length: 200    # m de los brazos de entrada/salida (transversales y extremos de la arteria)
+  arterial:
+    lanes: 2            # carriles por sentido
+    speed: 13.89        # m/s (50 km/h)
+  cross:
+    lanes: 1            # carriles por sentido en las transversales N-S
+    speed: 11.11        # m/s (40 km/h)
+  left_turn_pocket:
+    lanes: 1            # carril exclusivo de giro a la izquierda en cada acceso (netconvert --turn-lanes)
+    length: 60          # m
+
+tls:
+  # 4 fases verdes: 0 NS recto(+derecha), 1 NS giro izq., 2 EO recto(+derecha), 3 EO giro izq.
+  # Cada verde va seguido de amarillo y todo rojo.
+  yellow: 3
+  all_red: 1
+  min_green: 10
+  max_green: 60
+  fixed_time_greens: [22, 12, 28, 12]   # ciclo = 74 + 4*(3+1) = 90 s  (política P1 / Condición 1)
+
+episode:
+  begin: 0
+  warmup: 300           # s no registrados
+  recorded: 3600        # s registrados
+  time_to_teleport: 300
+
+vehicle:
+  vclass: passenger
+  emission_class: HBEFA3/PC_G_EU4
+  sigma: 0.5
+
+turning:                 # probabilidades en cada intersección (configurable)
+  straight: 0.70
+  left: 0.15
+  right: 0.15
+  min_route_prob: 0.001  # rutas menos probables se descartan y se renormaliza
+
+# Demanda en veh/h por entrada. 'shape': constant | peak.
+# En 'peak' la tasa sube linealmente de 'base' a 'peak' en el centro del periodo registrado y vuelve a 'base'.
+demand_segment: 300      # s por segmento de demanda constante a trozos
+demands:
+  D1:
+    label: Baja
+    shape: constant
+    arterial: {W: 400, E: 400}
+    cross: 150
+  D2:
+    label: Media
+    shape: constant
+    arterial: {W: 700, E: 700}
+    cross: 300
+  D3:
+    label: Alta
+    shape: constant
+    arterial: {W: 1000, E: 1000}
+    cross: 450
+  D4:
+    label: Pico
+    shape: peak
+    arterial: {W: [400, 1100], E: [400, 1100]}
+    cross: [150, 500]
+  D5:
+    label: OOD (solo prueba)
+    shape: constant
+    # media 850 veh/h con desbalance: entra más tráfico por el Este (sentido E->O) que por el Oeste
+    arterial: {W: 700, E: 1000}
+    cross: 350

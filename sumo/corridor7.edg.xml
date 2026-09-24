@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<edges>
+  <edge from="W" to="J0" id="W_J0" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="W_J0" idAfter="W_J0_in" />
+  </edge>
+  <edge from="J0" to="W" id="J0_W" numLanes="2" speed="13.89" priority="2" />
+  <edge from="J0" to="J1" id="J0_J1" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J0_J1" idAfter="J0_J1_in" />
+  </edge>
+  <edge from="J1" to="J0" id="J1_J0" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J1_J0" idAfter="J1_J0_in" />
+  </edge>
+  <edge from="J1" to="J2" id="J1_J2" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J1_J2" idAfter="J1_J2_in" />
+  </edge>
+  <edge from="J2" to="J1" id="J2_J1" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J2_J1" idAfter="J2_J1_in" />
+  </edge>
+  <edge from="J2" to="J3" id="J2_J3" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J2_J3" idAfter="J2_J3_in" />
+  </edge>
+  <edge from="J3" to="J2" id="J3_J2" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J3_J2" idAfter="J3_J2_in" />
+  </edge>
+  <edge from="J3" to="J4" id="J3_J4" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J3_J4" idAfter="J3_J4_in" />
+  </edge>
+  <edge from="J4" to="J3" id="J4_J3" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J4_J3" idAfter="J4_J3_in" />
+  </edge>
+  <edge from="J4" to="J5" id="J4_J5" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J4_J5" idAfter="J4_J5_in" />
+  </edge>
+  <edge from="J5" to="J4" id="J5_J4" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J5_J4" idAfter="J5_J4_in" />
+  </edge>
+  <edge from="J5" to="J6" id="J5_J6" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J5_J6" idAfter="J5_J6_in" />
+  </edge>
+  <edge from="J6" to="J5" id="J6_J5" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="J6_J5" idAfter="J6_J5_in" />
+  </edge>
+  <edge from="J6" to="E" id="J6_E" numLanes="2" speed="13.89" priority="2" />
+  <edge from="E" to="J6" id="E_J6" numLanes="2" speed="13.89" priority="2">
+    <split pos="-60" lanes="0 1 2" idBefore="E_J6" idAfter="E_J6_in" />
+  </edge>
+  <edge from="N0" to="J0" id="N0_J0" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N0_J0" idAfter="N0_J0_in" />
+  </edge>
+  <edge from="J0" to="N0" id="J0_N0" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S0" to="J0" id="S0_J0" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S0_J0" idAfter="S0_J0_in" />
+  </edge>
+  <edge from="J0" to="S0" id="J0_S0" numLanes="1" speed="11.11" priority="1" />
+  <edge from="N1" to="J1" id="N1_J1" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N1_J1" idAfter="N1_J1_in" />
+  </edge>
+  <edge from="J1" to="N1" id="J1_N1" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S1" to="J1" id="S1_J1" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S1_J1" idAfter="S1_J1_in" />
+  </edge>
+  <edge from="J1" to="S1" id="J1_S1" numLanes="1" speed="11.11" priority="1" />
+  <edge from="N2" to="J2" id="N2_J2" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N2_J2" idAfter="N2_J2_in" />
+  </edge>
+  <edge from="J2" to="N2" id="J2_N2" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S2" to="J2" id="S2_J2" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S2_J2" idAfter="S2_J2_in" />
+  </edge>
+  <edge from="J2" to="S2" id="J2_S2" numLanes="1" speed="11.11" priority="1" />
+  <edge from="N3" to="J3" id="N3_J3" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N3_J3" idAfter="N3_J3_in" />
+  </edge>
+  <edge from="J3" to="N3" id="J3_N3" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S3" to="J3" id="S3_J3" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S3_J3" idAfter="S3_J3_in" />
+  </edge>
+  <edge from="J3" to="S3" id="J3_S3" numLanes="1" speed="11.11" priority="1" />
+  <edge from="N4" to="J4" id="N4_J4" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N4_J4" idAfter="N4_J4_in" />
+  </edge>
+  <edge from="J4" to="N4" id="J4_N4" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S4" to="J4" id="S4_J4" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S4_J4" idAfter="S4_J4_in" />
+  </edge>
+  <edge from="J4" to="S4" id="J4_S4" numLanes="1" speed="11.11" priority="1" />
+  <edge from="N5" to="J5" id="N5_J5" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N5_J5" idAfter="N5_J5_in" />
+  </edge>
+  <edge from="J5" to="N5" id="J5_N5" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S5" to="J5" id="S5_J5" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S5_J5" idAfter="S5_J5_in" />
+  </edge>
+  <edge from="J5" to="S5" id="J5_S5" numLanes="1" speed="11.11" priority="1" />
+  <edge from="N6" to="J6" id="N6_J6" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="N6_J6" idAfter="N6_J6_in" />
+  </edge>
+  <edge from="J6" to="N6" id="J6_N6" numLanes="1" speed="11.11" priority="1" />
+  <edge from="S6" to="J6" id="S6_J6" numLanes="1" speed="11.11" priority="1">
+    <split pos="-60" lanes="0 1" idBefore="S6_J6" idAfter="S6_J6_in" />
+  </edge>
+  <edge from="J6" to="S6" id="J6_S6" numLanes="1" speed="11.11" priority="1" />
+</edges>
