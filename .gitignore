@@ -9,3 +9,7 @@ runs/
 data/**/episodes/
 *.pt
 *.ckpt
+
+# Directorios temporales de construcción de datasets
+data/.*.tmp/
+.pytest_cache/

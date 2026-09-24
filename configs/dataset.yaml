@@ -1,0 +1,23 @@
+# Etapa 3 — diseño del dataset base congelado.
+# La partición por semilla está en configs/base.yaml (splits); aquí se define qué se recolecta.
+
+version: base_v1
+
+demands: [D1, D2, D3, D4]      # train / val / test
+ood_demand: D5                 # solo test_ood
+
+policies:
+  P1:
+    kind: fixed_time           # programa 'fixed' de SUMO (ciclo de 90 s)
+  P2:
+    kind: random_restricted    # cambia con probabilidad p (respeta verdes mín./máx. del entorno)
+    p_by_seed_parity: {odd: 0.2, even: 0.5}   # así train, val y test contienen ambos valores de p
+  P3:
+    kind: actuated             # programa 'actuated' de SUMO (detectores, verde 10-60 s)
+  P4:
+    kind: max_pressure         # max-pressure cíclico con exploración epsilon
+    epsilon: 0.1
+
+collection:
+  workers: 4                   # procesos en paralelo (1 simulación libsumo por proceso)
+  compress: true
