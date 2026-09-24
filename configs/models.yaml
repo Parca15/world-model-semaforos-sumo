@@ -1,0 +1,30 @@
+# Etapas 4-6 — modelos predictivos. Interfaz común: entrada [B, W, 91+7] -> Δŝ_{t+1} [B, 91], r̂_t [B, 7].
+
+param_budget:
+  target: 150000        # parámetros entrenables objetivo (±10 %)
+  tolerance: 0.10
+
+tsmixer:
+  # Configuración por defecto (Experimento 0 y punto de partida de la búsqueda).
+  default: {n_blocks: 4, d_model: 96, dropout: 0.1, norm: layer, lr: 0.001, weight_decay: 0.0001}
+  # Espacio de búsqueda aleatoria. ff_dim no se busca: se calcula para cumplir el presupuesto de parámetros.
+  search_space:
+    n_blocks: [2, 3, 4, 6]
+    d_model: [64, 96, 128]
+    dropout: [0.0, 0.1, 0.2]
+    norm: [layer, batch]
+    lr: [0.0003, 0.001, 0.003]
+    weight_decay: [0.0, 0.0001, 0.001]
+
+baselines:
+  moving_average: {}            # Δŝ = media de la ventana − s_t ; r̂ = media de las recompensas de train
+  ridge: {alphas: [0.1, 1.0, 10.0, 100.0]}   # alpha elegido en validación
+  mlp: {hidden: [256, 256], dropout: 0.1, lr: 0.001, weight_decay: 0.0001}   # sin estructura temporal (ventana aplanada)
+
+autoencoder:                    # Experimento 0
+  latent_dims: [16, 32]
+  hidden: [128, 64]
+  beta: 0.001                   # peso del término KL del VAE
+  lr: 0.001
+  max_epochs: 100
+  patience: 10

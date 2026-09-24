@@ -101,9 +101,40 @@ class WindowDataset(Dataset):
             R[i] = ep.rewards[t]
         return X, dS, R
 
+    def flat(self) -> "FlatWindows":
+        """Vista compacta para entrenar: las ventanas se arman por indexación, sin copiar W veces cada fila."""
+        rows, delta, reward, ends, offset = [], [], [], [], 0
+        for e, ep in enumerate(self.episodes):
+            s = self._flat(ep.states)
+            rows.append(np.concatenate([s[:-1], ep.actions.astype(np.float32)], axis=1))
+            delta.append(s[1:] - s[:-1])
+            reward.append(ep.rewards)
+            ends.append(offset + self.windows[self.windows[:, 0] == e, 1])
+            offset += ep.T
+        return FlatWindows(np.concatenate(rows), np.concatenate(delta), np.concatenate(reward),
+                           np.concatenate(ends), self.W)
+
     @property
     def feature_names(self) -> list[str]:
         return [f["name"] for f in self.schema["features"]]
+
+
+@dataclass
+class FlatWindows:
+    rows: np.ndarray     # [R, input_dim]  fila t = (s_t, a_t) de todos los episodios concatenados
+    delta: np.ndarray    # [R, state_dim]  Δs_{t+1}
+    reward: np.ndarray   # [R, n_tls]      r_t
+    ends: np.ndarray     # [N]             fila final de cada ventana válida (nunca cruza episodios)
+    W: int
+
+    def __len__(self) -> int:
+        return len(self.ends)
+
+    def batch(self, idx: np.ndarray) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        e = self.ends[idx]
+        rows = e[:, None] + np.arange(-self.W + 1, 1)
+        return (torch.from_numpy(self.rows[rows]), torch.from_numpy(self.delta[e]),
+                torch.from_numpy(self.reward[e]))
 
 
 def dataset_root(version: str, data_dir: Path = DATA_DIR) -> Path:

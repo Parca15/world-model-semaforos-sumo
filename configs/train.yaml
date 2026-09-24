@@ -1,0 +1,22 @@
+# Etapa 6 — protocolo de entrenamiento común (idéntico para cualquier modelo temporal).
+
+loss:
+  reward_weight: 1.0      # λ en MSE(Δs) + λ·MSE(r)
+optimizer: adamw
+batch_size: 256
+max_epochs: 200
+patience: 10              # early stopping sobre la pérdida de validación
+# Adaptación a CPU: una "época" es una muestra aleatoria de ventanas de train (las ventanas consecutivas
+# se solapan en W-1 pasos) y la pérdida de validación se mide en una submuestra fija.
+samples_per_epoch: 11040  # 1/4 de las ventanas de train por época
+val_max_samples: 4000
+search:
+  n_configs: 12           # presupuesto de ajuste de hiperparámetros
+  seed: 2024              # semilla de la búsqueda aleatoria
+  max_epochs: 60          # tope durante la búsqueda (la configuración final usa max_epochs)
+final_seeds: [0, 1, 2, 3, 4]
+workers: 4                # entrenamientos en paralelo (1 hilo de torch cada uno)
+
+eval:
+  horizons: [1, 3, 5, 10, 20]
+  congestion_percentile: 75   # "régimen congestionado": cola > p75 de train

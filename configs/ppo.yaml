@@ -1,0 +1,37 @@
+# Etapas 7-8 — PPO (Stable-Baselines3). MISMOS hiperparámetros en el Dream Environment y en SUMO directo.
+
+hyperparams:
+  learning_rate: 0.0003
+  rollout_size: 2048      # transiciones por actualización (n_steps × n_envs)
+  batch_size: 256
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  net_arch: [128, 128]
+
+observation: normalized_state   # s_t normalizado con norm_stats del dataset base, aplanado (91)
+reward_scale: 10.0              # r_PPO = Σ_i r_t^i / reward_scale (igual en ambos entornos)
+seeds: [0, 1, 2, 3, 4]
+
+dream:
+  n_envs: 16                    # entornos imaginados en lote (una sola pasada del modelo)
+  episode_steps: 40             # 200 s imaginados (limita el error compuesto)
+  total_timesteps: 400000
+  reset_split: train            # ventanas reales de reinicio
+
+sumo:
+  n_envs: 1
+  # Presupuesto de pasos de SUMO = transiciones de SUMO usadas para construir el World Model (train + val),
+  # para comparar a igual número de interacciones con el simulador.
+  total_timesteps: 57600
+  demands: [D1, D2, D3, D4]
+  seeds: [1, 2, 3, 4]           # mismas semillas de simulación que train del dataset
+  workers: 3
+
+planning:                        # planificación por imaginación (complementaria)
+  n_candidates: 16               # acciones conjuntas candidatas por decisión (incluye mantener todo y la acción de PPO)
+  horizon: 5                     # pasos imaginados por candidato
