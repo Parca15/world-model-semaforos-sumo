@@ -24,8 +24,8 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 |---|---|---|
 | 0 | Entorno y esqueleto | ✅ |
 | 1 | Escenario SUMO de 7 intersecciones | ✅ |
-| 2 | `TrafficEnvironment` y `CustomStateBuilder` | ⏳ |
-| 3 | Dataset `base_v1` | — |
+| 2 | `TrafficEnvironment` y `CustomStateBuilder` | ✅ |
+| 3 | Dataset `base_v1` | ⏳ |
 | 4 | Baselines | — |
 | 5 | Experimento 0 (AE/VAE) | — |
 | 6 | Modelos temporales | — |
@@ -58,3 +58,17 @@ Validación con tiempo fijo y semilla 1 (5 corridas por demanda, salidas idénti
 | D5 OOD | 7152 | 0 | 58.9 | 129.8 |
 
 ![Red corridor7](results/figures/corridor7_network.png)
+
+## Etapa 2 — `TrafficEnvironment` y `CustomStateBuilder`
+
+```bash
+python -m pytest                    # pruebas unitarias (episodios cortos)
+python scripts/validate_env.py      # episodio completo (720 pasos) con acciones aleatorias en D1..D5
+```
+
+- `wm/env/traffic_env.py`: entorno gymnasium, Δt = 5 s, 720 pasos, `MultiDiscrete([2]*7)`, libsumo (o TraCI).
+  Modos `agent` (acciones externas), `fixed` y `actuated` (controla SUMO y el entorno solo observa).
+  `info["action"]` es la acción **efectiva** (1 si empezó un cambio de fase en el paso), la que se guarda en el dataset.
+- `wm/env/state_builder.py`: estado `7×13` (vehículos, detenidos, cola, velocidad, ocupación, espera acumulada,
+  flujo de salida, fase one-hot, tiempo en fase, amarillo). Recompensa `r_t^i = −(W_{t+1}^i − W_t^i)/100`.
+- Estadísticas por variable del episodio de validación: `results/stage2_env_check.csv`.

@@ -40,6 +40,9 @@ def sumo_binary(name: str = "sumo") -> str:
     raise FileNotFoundError(f"No se encontró el binario de SUMO '{name}'")
 
 
+sumo_home()  # libsumo necesita SUMO_HOME definida antes de importarse
+
+
 def load_config(name: str) -> dict:
     """Carga configs/<name>.yaml."""
     path = CONFIGS / (name if name.endswith(".yaml") else f"{name}.yaml")
