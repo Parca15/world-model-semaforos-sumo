@@ -4,7 +4,6 @@ scenarios:
   demands: [D1, D2, D3, D4, D5]   # D5 = fuera de distribución
   # Semillas nunca vistas (9-18 en el plan). Por costo de cómputo en CPU se usan 4 por escenario.
   seeds: [9, 10, 11, 12]
-workers: 4
 
 fidelity:
   segments_per_episode: 4        # segmentos de 40 pasos por episodio de test para retorno imaginado vs real

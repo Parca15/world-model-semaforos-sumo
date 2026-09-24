@@ -6,9 +6,11 @@ Un trabajo es un dict:
     lr, weight_decay, seed, max_epochs
     out_dir      carpeta donde se guardan model.pt, log.jsonl y fit.json
     ae_path      (opcional) checkpoint de AE/VAE: el modelo trabaja en el espacio latente
+Los trabajos son reanudables: si `out_dir/fit.json` ya existe para el MISMO trabajo, se reutiliza.
 """
 from __future__ import annotations
 
+import json
 import time
 from multiprocessing import Pool
 from pathlib import Path
@@ -17,10 +19,10 @@ import numpy as np
 import torch
 
 from wm.data.base import FlatWindows
-from wm.experiments.common import flat, save_checkpoint, save_json, train_config
+from wm.experiments.common import flat, load_json, save_checkpoint, save_json, train_config
 from wm.models.tsmixer import build_tsmixer, count_params
 from wm.train.trainer import fit
-from wm.utils import load_config, set_seed
+from wm.utils import load_config, max_workers, set_seed, threads_per_worker
 
 
 @torch.no_grad()
@@ -33,10 +35,20 @@ def latent_flat(fw: FlatWindows, ae, state_dim: int) -> FlatWindows:
     return FlatWindows(rows, (z_next - z).numpy(), fw.reward, fw.ends, fw.W)
 
 
+def _job_key(job: dict) -> str:
+    return json.dumps({k: v for k, v in job.items() if k not in ("out_dir", "threads")}, sort_keys=True)
+
+
 def run_job(job: dict) -> dict:
-    torch.set_num_threads(1)
-    set_seed(job["seed"])
     out = Path(job["out_dir"])
+    if (out / "fit.json").exists() and (out / "model.pt").exists():
+        done = load_json(out / "fit.json")
+        if done.get("job_key") == _job_key(job):
+            print(f"  [{job['name']}] ya entrenado: se reutiliza", flush=True)
+            return done
+    threads = job.get("threads", 1)
+    torch.set_num_threads(threads)
+    set_seed(job["seed"])
     out.mkdir(parents=True, exist_ok=True)
     train, val = flat("train"), flat("val")
     state_dim, n_tls = train.delta.shape[1], train.reward.shape[1]
@@ -47,14 +59,14 @@ def run_job(job: dict) -> dict:
     model = build_tsmixer(budget, input_dim=train.rows.shape[1], state_dim=train.delta.shape[1], n_tls=n_tls,
                           window=train.W, **job["arch"])
     tcfg = train_config(lr=job["lr"], weight_decay=job["weight_decay"], seed=job["seed"],
-                        max_epochs=job["max_epochs"], threads=1)
+                        max_epochs=job["max_epochs"], threads=threads)
     (out / "log.jsonl").unlink(missing_ok=True)
     t0 = time.time()
     model, res = fit(model, train, val, tcfg, out / "log.jsonl")
     summary = {"name": job["name"], "arch": job["arch"], "ff_dim": model.cfg.ff_dim, "lr": job["lr"],
                "weight_decay": job["weight_decay"], "seed": job["seed"], "params": count_params(model),
                "ae_path": job.get("ae_path"), **{k: v for k, v in res.to_dict().items() if k != "history"},
-               "wall_seconds": time.time() - t0}
+               "wall_seconds": time.time() - t0, "threads": threads, "job_key": _job_key(job)}
     save_checkpoint(model, "tsmixer", model.cfg.to_dict(), out / "model.pt", {"fit": summary})
     save_json(summary, out / "fit.json")
     print(f"  [{job['name']}] params={summary['params']} val={res.best_val_loss:.4f} "
@@ -63,6 +75,7 @@ def run_job(job: dict) -> dict:
 
 
 def run_jobs(jobs: list[dict], workers: int | None = None) -> list[dict]:
-    workers = workers or load_config("train")["workers"]
-    with Pool(min(workers, len(jobs)), maxtasksperchild=1) as pool:
+    workers = min(workers or max_workers(), len(jobs))
+    jobs = [{**j, "threads": threads_per_worker(workers)} for j in jobs]
+    with Pool(workers, maxtasksperchild=1) as pool:
         return pool.map(run_job, jobs, chunksize=1)

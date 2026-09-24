@@ -31,7 +31,7 @@ from wm.data.collect import EpisodeSpec, run_episode
 from wm.data.manifest import write_manifest
 from wm.data.normalization import NormStats
 from wm.env.state_builder import FEATURE_NAMES, FEATURES, RAW_METRICS
-from wm.utils import DATA_DIR, ROOT, load_config
+from wm.utils import DATA_DIR, ROOT, load_config, max_workers
 
 SPLIT_ORDER = ("train", "val", "test", "test_ood")
 
@@ -246,7 +246,7 @@ def main() -> int:
     ds_cfg = load_config("dataset")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--version", default=ds_cfg["version"])
-    ap.add_argument("--workers", type=int, default=ds_cfg["collection"]["workers"])
+    ap.add_argument("--workers", type=int, default=max_workers())
     ap.add_argument("--episode-seconds", type=int, default=None, help="solo para pruebas rápidas")
     ap.add_argument("--limit", type=int, default=None, help="solo los primeros N episodios (pruebas)")
     ap.add_argument("--allow-dirty", action="store_true", help="permitir cambios sin commitear en wm/, configs/, sumo/")

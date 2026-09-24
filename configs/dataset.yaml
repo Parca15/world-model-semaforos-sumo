@@ -19,5 +19,4 @@ policies:
     epsilon: 0.1
 
 collection:
-  workers: 4                   # procesos en paralelo (1 simulación libsumo por proceso)
   compress: true

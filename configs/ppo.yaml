@@ -30,7 +30,6 @@ sumo:
   total_timesteps: 57600
   demands: [D1, D2, D3, D4]
   seeds: [1, 2, 3, 4]           # mismas semillas de simulación que train del dataset
-  workers: 3
 
 planning:                        # planificación por imaginación (complementaria)
   n_candidates: 16               # acciones conjuntas candidatas por decisión (incluye mantener todo y la acción de PPO)

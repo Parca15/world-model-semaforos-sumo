@@ -17,9 +17,9 @@ from stable_baselines3.common.callbacks import BaseCallback
 
 from wm.control.ppo import make_ppo
 from wm.dream.dream_env import DreamVecEnv
-from wm.experiments.common import dataset, flat, results_path, run_dir, save_json
+from wm.experiments.common import dataset, load_json, flat, results_path, run_dir, save_json
 from wm.experiments.stage6_tsmixer import make_predictor, representation
-from wm.utils import load_config, set_seed
+from wm.utils import load_config, max_workers, set_seed
 
 
 class CurveCallback(BaseCallback):
@@ -40,6 +40,10 @@ class CurveCallback(BaseCallback):
 
 
 def train_seed(seed: int) -> dict:
+    done = run_dir("ppo_dream", f"seed{seed}") / "summary.json"
+    if done.exists() and (done.parent / "ppo.zip").exists():
+        print(f"  PPO sueño semilla {seed}: ya entrenado, se reutiliza", flush=True)
+        return load_json(done)
     torch.set_num_threads(1)
     set_seed(seed)
     cfg = load_config("ppo")
@@ -66,7 +70,7 @@ def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     seeds = load_config("ppo")["seeds"]
     t0 = time.time()
-    with Pool(min(4, len(seeds)), maxtasksperchild=1) as pool:
+    with Pool(min(max_workers(), len(seeds)), maxtasksperchild=1) as pool:
         rows = pool.map(train_seed, seeds, chunksize=1)
     pd.DataFrame(rows).to_csv(results_path("stage7_dream_ppo.csv"), index=False)
     ok = all((run_dir("ppo_dream", f"seed{s}") / "ppo.zip").exists() for s in seeds)

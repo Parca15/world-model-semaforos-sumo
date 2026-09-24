@@ -50,6 +50,18 @@ def load_config(name: str) -> dict:
         return yaml.safe_load(f)
 
 
+def max_workers() -> int:
+    """Procesos simultáneos permitidos (configs/compute.yaml), leído en cada llamada."""
+    return int(load_config("compute")["workers"])
+
+
+def threads_per_worker(workers: int | None = None) -> int:
+    """Hilos de torch por proceso: se reparten los núcleos físicos entre los procesos simultáneos."""
+    import psutil
+
+    return max(1, (psutil.cpu_count(logical=False) or 1) // (workers or max_workers()))
+
+
 def set_seed(seed: int) -> None:
     random.seed(seed)
     np.random.seed(seed)

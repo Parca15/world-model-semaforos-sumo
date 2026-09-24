@@ -22,24 +22,28 @@ from wm.experiments.common import (dataset, evaluate_predictor, flat, load_check
 from wm.models.ae import LatentPredictor, StateAE, fit_ae
 from wm.models.predictor import TorchPredictor
 from wm.train.runner import run_jobs
-from wm.utils import load_config, set_seed
+from wm.utils import load_config, set_seed, threads_per_worker
 
 
 def train_autoencoders(cfg: dict) -> tuple[pd.DataFrame, dict[str, str]]:
     ds = dataset("train")
     train_s = flat("train").rows[:, :ds.state_dim].copy()
     val_s = flat("val").rows[:, :ds.state_dim].copy()
-    torch.set_num_threads(4)
+    torch.set_num_threads(threads_per_worker(1))
     rows, best = [], {}
     for variational in (False, True):
         kind = "VAE" if variational else "AE"
         for z in cfg["latent_dims"]:
-            set_seed(0)
-            model = StateAE(ds.state_dim, z, cfg["hidden"], variational)
-            model, info = fit_ae(model, train_s, val_s, cfg["lr"], cfg["beta"] if variational else 0.0,
-                                 cfg["max_epochs"], cfg["patience"], batch_size=cfg["batch_size"])
             path = run_dir("exp0") / f"{kind.lower()}{z}.pt"
-            torch.save({"model": model, "info": info}, path)
+            if path.exists() and torch.load(path, map_location="cpu", weights_only=False).get("config") == cfg:
+                info = torch.load(path, map_location="cpu", weights_only=False)["info"]
+                print(f"  {kind} z={z}: ya entrenado, se reutiliza")
+            else:
+                set_seed(0)
+                model = StateAE(ds.state_dim, z, cfg["hidden"], variational)
+                model, info = fit_ae(model, train_s, val_s, cfg["lr"], cfg["beta"] if variational else 0.0,
+                                     cfg["max_epochs"], cfg["patience"], batch_size=cfg["batch_size"])
+                torch.save({"model": model, "info": info, "config": cfg}, path)
             rows.append({"tipo": kind, "z": z, "val_recon_mse": info["val_recon_mse"], "épocas": info["epochs"],
                          "path": str(path)})
             print(f"    ({info['epochs']} épocas)", flush=True)
@@ -65,7 +69,7 @@ def main() -> int:
             {"name": "AE", "out_dir": str(run_dir("exp0", "tsmixer_ae")), "ae_path": best["AE"], **common},
             {"name": "VAE", "out_dir": str(run_dir("exp0", "tsmixer_vae")), "ae_path": best["VAE"], **common}]
     print("Entrenando TSMixer sobre estado crudo, z(AE) y z(VAE) ...")
-    fits = {f["name"]: f for f in run_jobs(jobs, workers=3)}
+    fits = {f["name"]: f for f in run_jobs(jobs)}
 
     ds = dataset("train")
     predictors = {"crudo": TorchPredictor(load_checkpoint(run_dir("exp0", "tsmixer_raw") / "model.pt"), "crudo",

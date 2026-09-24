@@ -11,6 +11,7 @@ Salidas: results/stage9_control_episodes.csv, results/stage9_control_summary.csv
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from multiprocessing import Pool
@@ -27,7 +28,7 @@ from wm.eval.fidelity import decision_point, imagined_returns, kendall, logged_f
 from wm.eval.stats import bootstrap_ci
 from wm.experiments.common import W, dataset, load_json, results_path, run_dir, save_json
 from wm.experiments.stage6_tsmixer import make_predictor, representation
-from wm.utils import load_config
+from wm.utils import load_config, max_workers
 
 REFERENCE = ("Tiempo fijo", "Actuado", "Max-Pressure")
 LEARNED = ("PPO directo", "WM + TSMixer", "WM + TSMixer + planificación")
@@ -70,13 +71,20 @@ def run_control(workers: int) -> pd.DataFrame:
     scen = [(d, s) for d in ev["scenarios"]["demands"] for s in ev["scenarios"]["seeds"]]
     jobs = [(c, 0, d, s) for c in REFERENCE for d, s in scen]
     jobs += [(c, k, d, s) for c in LEARNED for k in seeds for d, s in scen]
-    print(f"Evaluando {len(jobs)} episodios en SUMO ({len(scen)} escenarios) ...", flush=True)
-    rows = []
-    with Pool(workers, maxtasksperchild=4) as pool:
-        for i, r in enumerate(pool.imap_unordered(control_job, jobs, chunksize=1), 1):
+    # Reanudable: cada episodio terminado se agrega a un .jsonl y no se repite.
+    partial = results_path("stage9_control_episodes.partial.jsonl")
+    rows = [json.loads(line) for line in partial.read_text(encoding="utf-8").splitlines()] if partial.exists() else []
+    done = {(r["condition"], r["train_seed"], r["demand"], r["seed"]) for r in rows}
+    todo = [j for j in jobs if j not in done]
+    print(f"Evaluando {len(todo)} de {len(jobs)} episodios en SUMO ({len(scen)} escenarios) ...", flush=True)
+    with Pool(workers, maxtasksperchild=4) as pool, open(partial, "a", encoding="utf-8") as f:
+        for i, r in enumerate(pool.imap_unordered(control_job, todo, chunksize=1), 1):
             rows.append(r)
+            f.write(json.dumps(r) + "
+")
+            f.flush()
             if i % 20 == 0:
-                print(f"  {i}/{len(jobs)} episodios", flush=True)
+                print(f"  {i}/{len(todo)} episodios", flush=True)
     df = pd.DataFrame(rows).sort_values(["condition", "train_seed", "demand", "seed"])
     df.to_csv(results_path("stage9_control_episodes.csv"), index=False)
     return df
@@ -143,7 +151,7 @@ def main() -> int:
     ap.add_argument("--skip-control", action="store_true")
     ap.add_argument("--skip-fidelity", action="store_true")
     args = ap.parse_args()
-    workers = load_config("eval")["workers"]
+    workers = max_workers()
     t0 = time.time()
     df = (pd.read_csv(results_path("stage9_control_episodes.csv")) if args.skip_control
           else run_control(workers))

@@ -1,0 +1,4 @@
+# Paralelismo de TODAS las etapas (procesos simultáneos). Cada etapa lo lee al empezar, así que se puede
+# ajustar entre etapas sin detener el pipeline. Cada proceso usa ~0,4-0,6 GB de RAM (torch + datos / SUMO).
+# Equipo actual: 6 GB de RAM compartidos con otras aplicaciones -> 1-2 procesos.
+workers: 1
