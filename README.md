@@ -26,9 +26,9 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 1 | Escenario SUMO de 7 intersecciones | ✅ |
 | 2 | `TrafficEnvironment` y `CustomStateBuilder` | ✅ |
 | 3 | Dataset base (`base_v2`) | ✅ |
-| 4 | Baselines | ⏳ |
-| 5 | Experimento 0 (AE/VAE) | — |
-| 6 | Modelos temporales | — |
+| 4 | Baselines | ✅ |
+| 5 | Experimento 0 (AE/VAE) | ✅ (decisión: estado crudo) |
+| 6 | Modelo temporal (TSMixer) | ⏳ |
 | 7 | Dream Environment + PPO | — |
 | 8 | PPO directo en SUMO | — |
 | 9 | Evaluación final | — |
@@ -105,3 +105,39 @@ X, dS, R = ds.arrays()
 - Resultados de las políticas en `base_v2` (espera acumulada media por intersección): actuada 705 s,
   Max-Pressure 1706 s, tiempo fijo 2893 s, aleatoria 6702 s. 69 120 transiciones en train/val/test + 5760 en OOD.
 - Los episodios `.npz` no van a git (se regeneran con el comando de arriba); los metadatos y el manifiesto sí.
+
+## Etapas 4–10 — pipeline de experimentos
+
+```bash
+python -m wm.experiments.stage4_baselines   # persistencia, media móvil, ridge, MLP
+python scripts/run_pipeline.py              # Etapas 5-10 en secuencia (--from N / --to N), un log por etapa en runs/logs/
+```
+
+- Paralelismo de todas las etapas en `configs/compute.yaml` (`workers`); se lee al empezar cada etapa.
+- **Todo es reanudable.** Si el proceso se interrumpe (p. ej. el equipo se suspende), basta con relanzar el mismo
+  comando: los entrenamientos del modelo temporal continúan desde la última época terminada
+  (`train_state.pt`, idéntico a no interrumpir), PPO desde el último punto de control (cada 4 actualizaciones) y
+  la evaluación en SUMO desde el último episodio guardado. Un trabajo se reutiliza solo si su configuración no
+  cambió (`job_key`).
+- **Corrida de humo** (minutos, sin tocar `runs/` ni `results/`): copiar `configs/` a otra carpeta, reducir los
+  presupuestos (épocas, pasos de PPO, escenarios) y redirigir las salidas:
+
+  ```powershell
+  $env:WM_CONFIGS="<tmp>\configs"; $env:WM_RUNS_DIR="<tmp>uns"; $env:WM_RESULTS_DIR="<tmp>esults"
+  .venv\Scripts\python scriptsun_pipeline.py --from 7
+  ```
+
+Resultados principales hasta ahora (test, estado normalizado):
+
+| Modelo | RMSE 1 paso | RMSE 20 pasos |
+|---|---|---|
+| Persistencia | 0,477 | 0,740 |
+| Media móvil | 0,561 | 0,605 |
+| Ridge | 0,245 | 0,442 |
+| MLP | 0,286 | 0,721 |
+
+- Etapa 5 (Experimento 0): AE/VAE (z = 16, 32) no mejoran de forma significativa al estado crudo a h = 20
+  (Wilcoxon + Holm), así que los modelos temporales trabajan sobre el estado crudo normalizado
+  (`results/stage5_decision.json`).
+- Etapa 6: diagnóstico de la comparación TSMixer–Ridge y la decisión de volver a 200 épocas en
+  [`results/stage6_diagnostico.md`](results/stage6_diagnostico.md).
