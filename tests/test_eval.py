@@ -100,3 +100,32 @@ def test_multistep_loss_uses_future_actions_and_is_finite():
     assert torch.allclose(fut[:, 0], torch.from_numpy(rows[fw.ends[idx]]))
     five = _loss(m, fw, idx, TrainConfig(rollout_k=5))[0]
     assert torch.isfinite(five) and not torch.isclose(one, five)
+
+
+def test_interrupted_training_resumes_to_the_same_result(tmp_path):
+    """Entrenar 3 épocas, "interrumpir" y reanudar hasta 6 debe dar lo mismo que 6 épocas seguidas."""
+    from wm.data.base import FlatWindows
+    from wm.train.trainer import TrainConfig, fit
+
+    rng = np.random.default_rng(0)
+    rows = rng.normal(size=(80, SD + NT)).astype(np.float32)
+    fw = FlatWindows(rows, rng.normal(size=(80, SD)).astype(np.float32),
+                     rng.normal(size=(80, NT)).astype(np.float32), np.arange(W - 1, 70), W)
+
+    def train(epochs, state_path=None, tag="a"):
+        torch.manual_seed(0)
+        m = build_tsmixer(150_000, n_blocks=2, d_model=64, dropout=0.1)
+        cfg = TrainConfig(max_epochs=epochs, batch_size=16, patience=100, samples_per_epoch=32)
+        return fit(m, fw, fw, cfg, state_path=state_path, state_tag=tag)
+
+    straight, res = train(6)
+    state = tmp_path / "state.pt"
+    train(3, state)
+    resumed, res2 = train(6, state)
+    assert res2.epochs_run == 6 and len(res2.history) == 6
+    assert np.isclose(res.best_val_loss, res2.best_val_loss)
+    for a, b in zip(straight.state_dict().values(), resumed.state_dict().values()):
+        assert torch.allclose(a, b)
+    # un estado de otro trabajo (tag distinto) se ignora
+    _, res3 = train(2, state, tag="otro")
+    assert res3.epochs_run == 2

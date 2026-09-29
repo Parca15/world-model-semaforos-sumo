@@ -6,7 +6,8 @@ Un trabajo es un dict:
     lr, weight_decay, seed, max_epochs
     out_dir      carpeta donde se guardan model.pt, log.jsonl y fit.json
     ae_path      (opcional) checkpoint de AE/VAE: el modelo trabaja en el espacio latente
-Los trabajos son reanudables: si `out_dir/fit.json` ya existe para el MISMO trabajo, se reutiliza.
+Los trabajos son reanudables: si `out_dir/fit.json` ya existe para el MISMO trabajo, se reutiliza; si un
+entrenamiento quedó a medias, continúa desde la última época terminada (`out_dir/train_state.pt`).
 """
 from __future__ import annotations
 
@@ -64,15 +65,16 @@ def run_job(job: dict) -> dict:
                           window=train.W, **job["arch"])
     tcfg = train_config(lr=job["lr"], weight_decay=job["weight_decay"], seed=job["seed"],
                         max_epochs=job["max_epochs"], threads=threads)
-    (out / "log.jsonl").unlink(missing_ok=True)
     t0 = time.time()
-    model, res = fit(model, train, val, tcfg, out / "log.jsonl")
+    key = _job_key(job)
+    model, res = fit(model, train, val, tcfg, out / "log.jsonl", state_path=out / "train_state.pt", state_tag=key)
     summary = {"name": job["name"], "arch": job["arch"], "ff_dim": model.cfg.ff_dim, "lr": job["lr"],
                "weight_decay": job["weight_decay"], "seed": job["seed"], "params": count_params(model),
                "ae_path": job.get("ae_path"), **{k: v for k, v in res.to_dict().items() if k != "history"},
-               "wall_seconds": time.time() - t0, "threads": threads, "job_key": _job_key(job)}
+               "wall_seconds": time.time() - t0, "threads": threads, "job_key": key}
     save_checkpoint(model, "tsmixer", model.cfg.to_dict(), out / "model.pt", {"fit": summary})
     save_json(summary, out / "fit.json")
+    (out / "train_state.pt").unlink(missing_ok=True)
     print(f"  [{job['name']}] params={summary['params']} val={res.best_val_loss:.4f} "
           f"época={res.best_epoch}/{res.epochs_run} {res.train_seconds / 60:.1f} min", flush=True)
     return summary

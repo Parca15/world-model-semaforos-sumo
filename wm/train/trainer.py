@@ -5,6 +5,11 @@ validación. Con `rollout_k` > 1 (pérdida multi-paso, opción del plan) el mode
 propias predicciones como entrada (con las acciones reales) y la pérdida promedia el error de estado y de
 recompensa en los k pasos; con k = 1 coincide con la pérdida a 1 paso. Una "época" es una muestra aleatoria de `samples_per_epoch` ventanas de train (las ventanas
 consecutivas se solapan en W−1 pasos, así que recorrerlas todas por época es redundante en CPU).
+
+Reanudación: con `state_path`, al final de cada época se guarda el estado completo (modelo, optimizador, mejor
+modelo, contadores del early stopping, historia y generadores aleatorios); si el entrenamiento se interrumpe, la
+siguiente llamada con el mismo `state_path` y la misma `state_tag` continúa desde la última época terminada y
+produce el mismo resultado que un entrenamiento sin interrupciones.
 """
 from __future__ import annotations
 
@@ -85,7 +90,8 @@ def evaluate_loss(model: nn.Module, flat: FlatWindows, idx: np.ndarray, cfg: Tra
 
 
 def fit(model: nn.Module, train: FlatWindows, val: FlatWindows, cfg: TrainConfig,
-        log_path: Path | None = None) -> tuple[nn.Module, FitResult]:
+        log_path: Path | None = None, state_path: Path | None = None,
+        state_tag: str | None = None) -> tuple[nn.Module, FitResult]:
     torch.set_num_threads(cfg.threads)
     torch.manual_seed(cfg.seed)
     rng = np.random.default_rng(cfg.seed)
@@ -100,9 +106,20 @@ def fit(model: nn.Module, train: FlatWindows, val: FlatWindows, cfg: TrainConfig
 
     best, best_state, best_epoch, bad = np.inf, None, 0, 0
     history = []
-    t0 = time.time()
-    epoch = 0
-    for epoch in range(1, cfg.max_epochs + 1):
+    state = _load_state(state_path, state_tag)
+    if state:
+        model.load_state_dict(state["model"])
+        opt.load_state_dict(state["opt"])
+        best, best_state, best_epoch, bad = state["best"], state["best_state"], state["best_epoch"], state["bad"]
+        history, peak = state["history"], max(peak, state["peak"])
+        rng.bit_generator.state = state["np_rng"]
+        torch.set_rng_state(state["torch_rng"])
+    if log_path:
+        log_path.write_text("".join(json.dumps(h) + "\n" for h in history), encoding="utf-8")
+    t0 = time.time() - (history[-1]["seconds"] if history else 0.0)
+    for epoch in range(len(history) + 1, cfg.max_epochs + 1):
+        if bad >= cfg.patience:
+            break
         model.train()
         order = rng.permutation(len(train))[:n_epoch]
         tr = np.zeros(3)
@@ -127,9 +144,28 @@ def fit(model: nn.Module, train: FlatWindows, val: FlatWindows, cfg: TrainConfig
             best_state = copy.deepcopy(model.state_dict())
         else:
             bad += 1
-            if bad >= cfg.patience:
-                break
-    elapsed = time.time() - t0
+        if state_path:
+            _save_state(state_path, {"tag": state_tag, "model": model.state_dict(), "opt": opt.state_dict(),
+                                     "best": best, "best_state": best_state, "best_epoch": best_epoch, "bad": bad,
+                                     "history": history, "peak": peak, "np_rng": rng.bit_generator.state,
+                                     "torch_rng": torch.get_rng_state()})
+    epochs_run = len(history)
+    elapsed = history[-1]["seconds"]
     model.load_state_dict(best_state)
     model.eval()
-    return model, FitResult(best_epoch, float(best), epoch, elapsed, elapsed / epoch, peak / 2**20, history)
+    return model, FitResult(best_epoch, float(best), epochs_run, elapsed, elapsed / epochs_run, peak / 2**20,
+                            history)
+
+
+def _load_state(path: Path | None, tag: str | None) -> dict | None:
+    """Estado de un entrenamiento interrumpido, si existe y corresponde al mismo trabajo (`tag`)."""
+    if not path or not path.exists():
+        return None
+    state = torch.load(path, map_location="cpu", weights_only=False)
+    return state if state.get("tag") == tag else None
+
+
+def _save_state(path: Path, state: dict) -> None:
+    tmp = path.with_suffix(".tmp")
+    torch.save(state, tmp)
+    tmp.replace(path)   # escritura atómica: una interrupción no deja un estado corrupto
