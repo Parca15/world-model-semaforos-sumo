@@ -136,7 +136,7 @@ def main() -> int:
     b4 = pd.read_csv(results_path("stage4_baselines.csv")).set_index(["modelo", "conjunto"])
     beats = {b: bool(test.rmse_1.mean() < b4.loc[(b, "test"), "rmse_1"] and
                      test.rmse_20.mean() < b4.loc[(b, "test"), "rmse_20"]) for b in ("Persistencia", "Ridge")}
-    save_json({"best_config": best, "representation": ae_path or "crudo", "aggregate": agg.to_dict(),
+    save_json({"best_config": best, "representation": ae_path or "crudo", "aggregate": {f"{m}_{s}": v for (m, s), v in agg.to_dict().items()},
                "ci_test": ci, "comparisons_test": comparisons, "beats": beats}, results_path("stage6_summary.json"))
 
     print(agg.to_string(float_format="%.4f"))
