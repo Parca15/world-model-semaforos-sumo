@@ -5,7 +5,7 @@ loss:
   rollout_k: 5            # pérdida multi-paso (opción del plan, igual para cualquier modelo); 1 = solo 1 paso
 optimizer: adamw
 batch_size: 256
-max_epochs: 60            # plan: 200; con el early stopping los modelos paran antes (≈ época 40) en CPU
+max_epochs: 200           # plan: 200; el early stopping (paciencia 10) decide cuándo parar (ver results/stage6_diagnostico.md)
 patience: 10              # early stopping sobre la pérdida de validación
 # Adaptación a CPU: una "época" es una muestra aleatoria de ventanas de train (las ventanas consecutivas
 # se solapan en W-1 pasos) y la pérdida de validación se mide en una submuestra fija.
