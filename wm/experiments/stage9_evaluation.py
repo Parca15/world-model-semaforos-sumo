@@ -82,8 +82,7 @@ def run_control(workers: int) -> pd.DataFrame:
     with Pool(workers, maxtasksperchild=4) as pool, open(partial, "a", encoding="utf-8") as f:
         for i, r in enumerate(pool.imap_unordered(control_job, todo, chunksize=1), 1):
             rows.append(r)
-            f.write(json.dumps(r) + "
-")
+            f.write(json.dumps(r) + "\n")
             f.flush()
             if i % 20 == 0:
                 print(f"  {i}/{len(todo)} episodios", flush=True)

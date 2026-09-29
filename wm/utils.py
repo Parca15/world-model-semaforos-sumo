@@ -10,11 +10,13 @@ import numpy as np
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIGS = ROOT / "configs"
+# WM_CONFIGS / WM_RUNS_DIR / WM_RESULTS_DIR redirigen configuración y salidas (p. ej. una corrida de humo con
+# presupuestos mínimos que no toca runs/ ni results/); el dataset y la red SUMO siempre son los del proyecto.
+CONFIGS = Path(os.environ.get("WM_CONFIGS", ROOT / "configs"))
 SUMO_DIR = ROOT / "sumo"
 DATA_DIR = ROOT / "data"
-RUNS_DIR = ROOT / "runs"
-RESULTS_DIR = ROOT / "results"
+RUNS_DIR = Path(os.environ.get("WM_RUNS_DIR", ROOT / "runs"))
+RESULTS_DIR = Path(os.environ.get("WM_RESULTS_DIR", ROOT / "results"))
 
 
 def sumo_home() -> Path:

@@ -22,7 +22,7 @@ import pandas as pd  # noqa: E402
 from wm.eval.stats import paired_comparisons  # noqa: E402
 from wm.experiments.common import load_json, results_path, run_dir, save_json  # noqa: E402
 from wm.experiments.stage9_evaluation import LEARNED, REFERENCE  # noqa: E402
-from wm.utils import RESULTS_DIR, load_config  # noqa: E402
+from wm.utils import DATA_DIR, RESULTS_DIR, load_config  # noqa: E402
 
 # Paleta categórica validada (orden fijo; el color sigue a la entidad, nunca a su posición)
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
@@ -208,7 +208,7 @@ def sample_efficiency() -> None:
         prog = (r - first) / (final - first) if final != first else np.ones_like(r)
         idx = np.flatnonzero(prog >= 0.9)
         reach.append(int(g.steps.values[idx[0]]) if len(idx) else None)
-    splits = load_json(RESULTS_DIR.parent / "data" / load_config("base")["dataset_version"] / "splits.json")
+    splits = load_json(DATA_DIR / load_config("base")["dataset_version"] / "splits.json")
     wm_steps = (len(splits["train"]) + len(splits["val"])) * 720
     out = {"sumo_steps_world_model": wm_steps, "sumo_steps_ppo_direct": ppo["sumo"]["total_timesteps"],
            "dream_steps_ppo": ppo["dream"]["total_timesteps"],

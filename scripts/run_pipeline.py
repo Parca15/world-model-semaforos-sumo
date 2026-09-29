@@ -9,6 +9,7 @@ Un criterio de salida no cumplido se reporta pero no detiene el pipeline; un err
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 import time
@@ -31,7 +32,7 @@ def main() -> int:
     ap.add_argument("--from", dest="start", type=int, default=5)
     ap.add_argument("--to", dest="end", type=int, default=10)
     args = ap.parse_args()
-    logs = ROOT / "runs" / "logs"
+    logs = Path(os.environ.get("WM_RUNS_DIR", ROOT / "runs")) / "logs"
     logs.mkdir(parents=True, exist_ok=True)
     for n, module in STAGES.items():
         if not args.start <= n <= args.end:
