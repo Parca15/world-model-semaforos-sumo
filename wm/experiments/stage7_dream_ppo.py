@@ -15,7 +15,7 @@ import pandas as pd
 import torch
 from stable_baselines3.common.callbacks import BaseCallback
 
-from wm.control.ppo import make_ppo
+from wm.control.ppo import learn_resumable, make_ppo, remove_checkpoint
 from wm.dream.dream_env import DreamVecEnv
 from wm.experiments.common import dataset, load_json, flat, results_path, run_dir, save_json
 from wm.experiments.stage6_tsmixer import make_predictor, representation
@@ -50,14 +50,15 @@ def train_seed(seed: int) -> dict:
     predictor = make_predictor(run_dir("tsmixer", "final", f"seed{seed}") / "model.pt", representation(), "TSMixer")
     env = DreamVecEnv(predictor, dataset("train").norm, flat(cfg["dream"]["reset_split"]), cfg["dream"]["n_envs"],
                       cfg["dream"]["episode_steps"], cfg["reward_scale"], seed=seed)
-    model = make_ppo(env, seed, cfg["dream"]["n_envs"])
+    out = run_dir("ppo_dream", f"seed{seed}")
     cb = CurveCallback()
     t0 = time.time()
-    model.learn(cfg["dream"]["total_timesteps"], callback=cb)
+    model = learn_resumable(lambda: make_ppo(env, seed, cfg["dream"]["n_envs"]), env,
+                            cfg["dream"]["total_timesteps"], out, cb, cfg["rollouts_per_checkpoint"])
     elapsed = time.time() - t0
-    out = run_dir("ppo_dream", f"seed{seed}")
     model.save(str(out / "ppo.zip"))
     pd.DataFrame(cb.rows).to_csv(out / "curve.csv", index=False)
+    remove_checkpoint(out)
     summary = {"seed": seed, "timesteps": cfg["dream"]["total_timesteps"], "train_minutes": elapsed / 60,
                "sumo_steps": 0, "final_dream_return": cb.rows[-1]["dream_return_mean"] if cb.rows else None}
     save_json(summary, out / "summary.json")

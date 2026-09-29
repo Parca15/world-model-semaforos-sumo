@@ -3,8 +3,9 @@
     python -m wm.experiments.stage8_sumo_ppo
 
 Presupuesto: tantos pasos de SUMO como transiciones se usaron para construir el World Model (train + val).
-La curva de aprendizaje se registra frente a los pasos de SUMO consumidos (Monitor de SB3).
-Salidas: runs/ppo_sumo/seed{k}/ppo.zip y monitor.csv, results/stage8_sumo_ppo.csv.
+La curva de aprendizaje (retorno por episodio) se registra frente a los pasos de SUMO consumidos.
+Reanudable: una corrida interrumpida continúa desde el último punto de control.
+Salidas: runs/ppo_sumo/seed{k}/ppo.zip y curve.csv, results/stage8_sumo_ppo.csv.
 """
 from __future__ import annotations
 
@@ -16,7 +17,7 @@ import pandas as pd
 import torch
 from stable_baselines3.common.monitor import Monitor
 
-from wm.control.ppo import SumoPPOEnv, make_ppo
+from wm.control.ppo import EpisodeCurve, SumoPPOEnv, learn_resumable, make_ppo, remove_checkpoint
 from wm.experiments.common import dataset, load_json, results_path, run_dir, save_json
 from wm.utils import load_config, max_workers, set_seed
 
@@ -30,15 +31,17 @@ def train_seed(seed: int) -> dict:
     set_seed(seed)
     cfg = load_config("ppo")
     out = run_dir("ppo_sumo", f"seed{seed}")
-    (out / "monitor.monitor.csv").unlink(missing_ok=True)   # una corrida interrumpida se empieza de nuevo
     env = Monitor(SumoPPOEnv(dataset("train").norm, cfg["sumo"]["demands"], cfg["sumo"]["seeds"],
-                             cfg["reward_scale"]), str(out / "monitor"), info_keywords=("demand", "sim_seed"))
+                             cfg["reward_scale"]), info_keywords=("demand", "sim_seed"))
     env.reset(seed=seed)
-    model = make_ppo(env, seed, cfg["sumo"]["n_envs"])
+    cb = EpisodeCurve()
     t0 = time.time()
-    model.learn(cfg["sumo"]["total_timesteps"])
+    model = learn_resumable(lambda: make_ppo(env, seed, cfg["sumo"]["n_envs"]), env,
+                            cfg["sumo"]["total_timesteps"], out, cb, cfg["rollouts_per_checkpoint"])
     elapsed = time.time() - t0
     model.save(str(out / "ppo.zip"))
+    pd.DataFrame(cb.rows).to_csv(out / "curve.csv", index=False)
+    remove_checkpoint(out)
     env.close()
     summary = {"seed": seed, "sumo_steps": cfg["sumo"]["total_timesteps"], "train_minutes": elapsed / 60}
     save_json(summary, out / "summary.json")

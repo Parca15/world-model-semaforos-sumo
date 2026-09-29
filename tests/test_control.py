@@ -94,3 +94,25 @@ def test_sumo_ppo_env_works_with_monitor(tmp_path):
         done = term or trunc
     assert info["episode"]["demand"] == "D1" and info["episode"]["l"] == 5
     env.close()
+
+
+def test_learn_resumable_continues_after_interruption(tmp_path):
+    """Un entrenamiento cortado tras el primer tramo se reanuda desde el punto de control hasta el total."""
+    import gymnasium as gym
+    from stable_baselines3 import PPO
+
+    from wm.control.ppo import EpisodeCurve, learn_resumable
+
+    env = Monitor(gym.make("CartPole-v1"))
+    new = lambda: PPO("MlpPolicy", env, n_steps=64, batch_size=32, n_epochs=1, seed=0, device="cpu")
+
+    first = learn_resumable(new, env, 128, tmp_path, EpisodeCurve(), rollouts_per_checkpoint=1)
+    assert first.num_timesteps == 128 and (tmp_path / "checkpoint.zip").exists()
+    rows_before = EpisodeCurve()
+    learn_resumable(new, env, 64, tmp_path, rows_before, rollouts_per_checkpoint=1)   # ya completo: no entrena
+    cb = EpisodeCurve()
+    model = learn_resumable(new, env, 320, tmp_path, cb, rollouts_per_checkpoint=2)
+    assert model.num_timesteps == 320
+    assert cb.rows[:len(rows_before.rows)] == rows_before.rows            # la curva previa se conserva
+    steps = [r["timesteps"] for r in cb.rows]
+    assert steps == sorted(steps) and steps[-1] <= 320 and {"r", "l"} <= cb.rows[0].keys()
