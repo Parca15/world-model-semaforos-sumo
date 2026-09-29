@@ -208,7 +208,9 @@ datos para los tres modelos y verifica `MANIFEST.sha256` antes de cargar.
 
 **Protocolo de entrenamiento común:**
 - Parámetros comparables: objetivo de ~150 k, con **±10 %** entre modelos (se reporta el número exacto).
-- Pérdida: `MSE(Δs) + λ·MSE(r)`, con λ = 1 (fijo para todos).
+- Pérdida: `MSE(Δs) + λ·MSE(r)`, con λ = 7/91 (fijo para todos): el mismo peso por salida, es decir, el MSE
+  sobre las 98 salidas. *Cambio respecto de λ = 1 (2026-09-29): con λ = 1 los modelos sacrificaban el estado
+  por la recompensa y quedaban por detrás de Ridge; ver `results/stage6_diagnostico.md`.*
 - Optimizador AdamW, *batch* 256, *early stopping* sobre la pérdida de validación (paciencia 10), máximo 200 épocas.
 - **Mismo presupuesto de ajuste de hiperparámetros:** 12 configuraciones por modelo (búsqueda aleatoria con semilla).
 - **5 semillas** por configuración final.

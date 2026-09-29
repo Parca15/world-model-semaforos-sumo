@@ -1,0 +1,5 @@
+tipo,z,val_recon_mse,épocas,path
+AE,16,0.0834839940071106,60,C:\Users\neide\Desktop\world-model-semaforos-sumo\runs\exp0\ae16.pt
+AE,32,0.0374852754175663,60,C:\Users\neide\Desktop\world-model-semaforos-sumo\runs\exp0\ae32.pt
+VAE,16,0.08171764016151428,60,C:\Users\neide\Desktop\world-model-semaforos-sumo\runs\exp0\vae16.pt
+VAE,32,0.05113951861858368,60,C:\Users\neide\Desktop\world-model-semaforos-sumo\runs\exp0\vae32.pt

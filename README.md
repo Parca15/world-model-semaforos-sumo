@@ -109,8 +109,7 @@ X, dS, R = ds.arrays()
 ## Etapas 4–10 — pipeline de experimentos
 
 ```bash
-python -m wm.experiments.stage4_baselines   # persistencia, media móvil, ridge, MLP
-python scripts/run_pipeline.py              # Etapas 5-10 en secuencia (--from N / --to N), un log por etapa en runs/logs/
+python scripts/run_pipeline.py --from 4     # Etapas 4-10 en secuencia (--from N / --to N), un log por etapa en runs/logs/
 ```
 
 - Paralelismo de todas las etapas en `configs/compute.yaml` (`workers`); se lee al empezar cada etapa.
@@ -127,7 +126,7 @@ python scripts/run_pipeline.py              # Etapas 5-10 en secuencia (--from N
   .venv\Scripts\python scriptsun_pipeline.py --from 7
   ```
 
-Resultados principales hasta ahora (test, estado normalizado):
+Baselines con λ = 1 (antes del cambio de pérdida; se recalculan con λ = 7/91 — ver `results/archive/lambda1/`):
 
 | Modelo | RMSE 1 paso | RMSE 20 pasos |
 |---|---|---|
@@ -139,5 +138,5 @@ Resultados principales hasta ahora (test, estado normalizado):
 - Etapa 5 (Experimento 0): AE/VAE (z = 16, 32) no mejoran de forma significativa al estado crudo a h = 20
   (Wilcoxon + Holm), así que los modelos temporales trabajan sobre el estado crudo normalizado
   (`results/stage5_decision.json`).
-- Etapa 6: diagnóstico de la comparación TSMixer–Ridge y la decisión de volver a 200 épocas en
+- Etapa 6: diagnóstico de la comparación TSMixer–Ridge (200 épocas y λ = 7/91 en la pérdida) en
   [`results/stage6_diagnostico.md`](results/stage6_diagnostico.md).

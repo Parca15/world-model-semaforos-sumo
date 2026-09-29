@@ -1,4 +1,4 @@
-"""Corre las Etapas 5-10 en secuencia (una a la vez), con un log por etapa en runs/logs/.
+"""Corre las Etapas 4-10 en secuencia (una a la vez), con un log por etapa en runs/logs/.
 
     python scripts/run_pipeline.py [--from 7] [--to 9]
 
@@ -17,6 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 STAGES = {
+    4: "wm.experiments.stage4_baselines",
     5: "wm.experiments.stage5_representation",
     6: "wm.experiments.stage6_tsmixer",
     7: "wm.experiments.stage7_dream_ppo",

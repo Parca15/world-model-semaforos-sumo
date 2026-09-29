@@ -1,7 +1,9 @@
 # Etapa 6 — protocolo de entrenamiento común (idéntico para cualquier modelo temporal).
 
 loss:
-  reward_weight: 1.0      # λ en MSE(Δs) + λ·MSE(r)
+  # λ en MSE(Δs) + λ·MSE(r). λ = 7/91 da el mismo peso a cada una de las 98 salidas (= MSE sobre [Δs, r]);
+  # con λ = 1 cada recompensa pesaba 13 veces más que cada variable de estado (results/stage6_diagnostico.md).
+  reward_weight: 0.0769230769
   rollout_k: 5            # pérdida multi-paso (opción del plan, igual para cualquier modelo); 1 = solo 1 paso
 optimizer: adamw
 batch_size: 256

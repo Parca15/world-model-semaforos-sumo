@@ -7,14 +7,16 @@ runs/baselines/mlp.pt. Criterio de salida: tabla de métricas de los baselines e
 """
 from __future__ import annotations
 
+import json
 import sys
 import time
 
 import numpy as np
 import pandas as pd
+import torch
 
-from wm.experiments.common import (dataset, evaluate_predictor, flat, results_path, run_dir, save_checkpoint,
-                                   save_json, summary_row, train_config)
+from wm.experiments.common import (dataset, evaluate_predictor, flat, load_checkpoint, results_path, run_dir,
+                                   save_checkpoint, save_json, summary_row, train_config)
 from wm.models.baselines import MovingAverage, Persistence, Ridge, WindowMLP, ridge_gram
 from wm.models.predictor import TorchPredictor
 from wm.models.tsmixer import count_params
@@ -46,11 +48,23 @@ def fit_mlp(cfg_m: dict) -> tuple[TorchPredictor, dict]:
     model = WindowMLP(**conf)
     tcfg = train_config(lr=cfg_m["lr"], weight_decay=cfg_m["weight_decay"], seed=0, threads=4)
     out = run_dir("baselines")
-    (out / "mlp_log.jsonl").unlink(missing_ok=True)
-    model, res = fit(model, flat("train"), flat("val"), tcfg, out / "mlp_log.jsonl")
-    save_checkpoint(model, "mlp", conf, out / "mlp.pt", {"fit": res.to_dict()})
-    print(f"  MLP: {count_params(model)} parámetros, mejor época {res.best_epoch}, {res.train_seconds / 60:.1f} min")
-    return TorchPredictor(model, "MLP", ds.state_dim), {"params": count_params(model), **res.to_dict()}
+    k = tcfg.rollout_k   # mismo protocolo común que el modelo temporal (pérdida multi-paso incluida)
+    tag = json.dumps({"model": conf, "train": {k_: v for k_, v in vars(tcfg).items() if k_ != "threads"}},
+                     sort_keys=True)
+    ckpt = out / "mlp.pt"
+    if ckpt.exists() and torch.load(ckpt, map_location="cpu").get("tag") == tag:
+        fit_info = torch.load(ckpt, map_location="cpu")["fit"]
+        print("  MLP: ya entrenado con el mismo protocolo, se reutiliza")
+        model = load_checkpoint(ckpt)
+    else:
+        model, res = fit(model, flat("train", k), flat("val", k), tcfg, out / "mlp_log.jsonl",
+                         state_path=out / "mlp_train_state.pt", state_tag=tag)
+        fit_info = res.to_dict()
+        save_checkpoint(model, "mlp", conf, ckpt, {"fit": fit_info, "tag": tag})
+        (out / "mlp_train_state.pt").unlink(missing_ok=True)
+    print(f"  MLP: {count_params(model)} parámetros, mejor época {fit_info['best_epoch']}, "
+          f"{fit_info['train_seconds'] / 60:.1f} min")
+    return TorchPredictor(model, "MLP", ds.state_dim), {"params": count_params(model), **fit_info}
 
 
 def main() -> int:

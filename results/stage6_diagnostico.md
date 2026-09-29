@@ -45,3 +45,31 @@ medio de 5 pasos.
 Se vuelve al valor del plan: `max_epochs: 200` con early stopping (paciencia 10). No cambia el protocolo común;
 el baseline MLP de la Etapa 4 se entrenó sin tope efectivo (paró por early stopping en la época 71), así que la
 comparación queda en igualdad de condiciones.
+
+## Segunda causa: el peso de la recompensa en la pérdida (λ)
+Con 200 épocas la semilla 0 paró por early stopping en la época 61 (mejor: 51) y en test quedó
+RMSE 0,274 (1 paso) y 0,464 (20 pasos): mejor que antes, pero todavía por detrás de Ridge en el estado, aunque
+claramente mejor en la recompensa (RMSE 1,94 frente a 2,25).
+
+Con λ = 1, `MSE(Δs)` promedia 91 variables y `MSE(r)` solo 7, así que cada recompensa pesa 13 veces más que cada
+variable de estado; la recompensa, además, tiene un error mucho mayor (≈ 0,63 frente a ≈ 0,11). La red dedica su
+capacidad a la recompensa. Ridge ajusta cada salida por separado y no tiene ese conflicto.
+
+Prueba con λ = 7/91 (mismo peso por salida = MSE sobre las 98 salidas), 15 épocas, config cfg04:
+
+| Test | RMSE 1 paso | RMSE 20 pasos | RMSE recompensa |
+|---|---|---|---|
+| Ridge | 0,245 | 0,442 | 2,25 |
+| TSMixer λ = 1, 61 épocas | 0,274 | 0,464 | 1,94 |
+| **TSMixer λ = 7/91, 15 épocas** | **0,244** | **0,399** | 2,02 |
+
+En la época 4 la pérdida de estado en validación ya era 0,151 (λ = 1 la alcanzaba en la época ~13), con la misma
+pérdida de recompensa (1,010 frente a 1,014).
+
+## Decisión final (aprobada 2026-09-29)
+- λ = 7/91 para todos los modelos entrenados con el protocolo común (`configs/train.yaml`, `PLAN_DE_TRABAJO.md`).
+- Se rehacen con el mismo protocolo: el MLP de la Etapa 4 (que además pasa a la pérdida multi-paso k = 5, como el
+  resto), los TSMixer del Experimento 0 (Etapa 5; los AE/VAE no dependen de λ y se reutilizan) y la Etapa 6
+  completa (búsqueda y 5 semillas).
+- Los resultados con λ = 1 se conservan como ablación en `results/archive/lambda1/` (modelos en
+  `runs/archive_lambda1/`).
