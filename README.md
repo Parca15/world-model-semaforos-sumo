@@ -122,8 +122,8 @@ python scripts/run_pipeline.py --from 4     # Etapas 4-10 en secuencia (--from N
   presupuestos (épocas, pasos de PPO, escenarios) y redirigir las salidas:
 
   ```powershell
-  $env:WM_CONFIGS="<tmp>\configs"; $env:WM_RUNS_DIR="<tmp>uns"; $env:WM_RESULTS_DIR="<tmp>esults"
-  .venv\Scripts\python scriptsun_pipeline.py --from 7
+  $env:WM_CONFIGS="<tmp>\configs"; $env:WM_RUNS_DIR="<tmp>\runs"; $env:WM_RESULTS_DIR="<tmp>\results"
+  .venv\Scripts\python scripts\run_pipeline.py --from 6
   ```
 
 Baselines con λ = 1 (antes del cambio de pérdida; se recalculan con λ = 7/91 — ver `results/archive/lambda1/`):
@@ -138,5 +138,8 @@ Baselines con λ = 1 (antes del cambio de pérdida; se recalculan con λ = 7/91 
 - Etapa 5 (Experimento 0): AE/VAE (z = 16, 32) no mejoran de forma significativa al estado crudo a h = 20
   (Wilcoxon + Holm), así que los modelos temporales trabajan sobre el estado crudo normalizado
   (`results/stage5_decision.json`).
-- Etapa 6: diagnóstico de la comparación TSMixer–Ridge (200 épocas y λ = 7/91 en la pérdida) en
+- Etapa 6: LSTM, TSMixer y Transformer (~150 k parámetros cada uno) con el mismo protocolo: 12 configuraciones
+  de búsqueda y 5 semillas finales por modelo (`wm/models/temporal.py`, `python -m wm.experiments.stage6_temporal`).
+  Resultados por modelo en `results/stage6/<modelo>/` y comparación en `results/stage6_comparison.csv`.
+  Diagnóstico de la comparación TSMixer–Ridge (200 épocas y λ = 7/91 en la pérdida) en
   [`results/stage6_diagnostico.md`](results/stage6_diagnostico.md).

@@ -71,7 +71,9 @@ def job(kind: str, name: str, cfg: dict, seed: int, max_epochs: int, stage: str,
 
 
 def out_path(kind: str, name: str):
-    return results_path(f"stage6/{kind}/{name}")
+    path = results_path(f"stage6/{kind}/{name}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def run_model(kind: str, ae_path: str | None) -> dict:
