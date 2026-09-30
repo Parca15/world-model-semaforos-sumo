@@ -1,0 +1,194 @@
+{
+ "model": "lstm",
+ "label": "LSTM",
+ "best_config": {
+  "n_layers": 2,
+  "dropout": 0.0,
+  "lr": 0.003,
+  "weight_decay": 0.0001
+ },
+ "representation": "crudo",
+ "aggregate": {
+  "rmse_1_mean": {
+   "test": 0.2042519211769104,
+   "test_ood": 0.2020453542470932,
+   "val": 0.2094913214445114
+  },
+  "rmse_1_std": {
+   "test": 0.0020583680868879353,
+   "test_ood": 0.0021235849426165234,
+   "val": 0.002009792364300249
+  },
+  "rmse_5_mean": {
+   "test": 0.2652501940727234,
+   "test_ood": 0.2644979417324066,
+   "val": 0.28172534704208374
+  },
+  "rmse_5_std": {
+   "test": 0.002501617905428791,
+   "test_ood": 0.002941963174994265,
+   "val": 0.0022906446143345547
+  },
+  "rmse_20_mean": {
+   "test": 0.3348207056522369,
+   "test_ood": 0.348419713973999,
+   "val": 0.37887564301490784
+  },
+  "rmse_20_std": {
+   "test": 0.0028210681563624446,
+   "test_ood": 0.00459567958365313,
+   "val": 0.003728358715349109
+  },
+  "auc_rmse_mean": {
+   "test": 5.576096153259277,
+   "test_ood": 5.65980167388916,
+   "val": 6.085372543334961
+  },
+  "auc_rmse_std": {
+   "test": 0.04795014903563377,
+   "test_ood": 0.06573613044417212,
+   "val": 0.04401191957748828
+  },
+  "reward_rmse_1_mean": {
+   "test": 1.9465363025665283,
+   "test_ood": 2.036464309692383,
+   "val": 2.3955945491790773
+  },
+  "reward_rmse_1_std": {
+   "test": 0.015371272672695016,
+   "test_ood": 0.019937140642529137,
+   "val": 0.015278681379550591
+  },
+  "phase_acc_1_mean": {
+   "test": 0.9822619047619048,
+   "test_ood": 0.9820496894409938,
+   "val": 0.9780072463768116
+  },
+  "phase_acc_1_std": {
+   "test": 0.0011117600962618434,
+   "test_ood": 0.001421582696629429,
+   "val": 0.0015085627715750363
+  },
+  "rmse_1_congestion_mean": {
+   "test": 0.18668633699417114,
+   "test_ood": 0.1903836190700531,
+   "val": 0.20059152841567993
+  },
+  "rmse_1_congestion_std": {
+   "test": 0.002015504079029109,
+   "test_ood": 0.0025750975010257323,
+   "val": 0.0022128619229692392
+  }
+ },
+ "ci_test": {
+  "rmse_1": [
+   0.2042519211769104,
+   0.20288157165050508,
+   0.20607376396656035
+  ],
+  "rmse_20": [
+   0.3348207056522369,
+   0.3327032208442688,
+   0.3369978070259094
+  ]
+ },
+ "comparisons_test": {
+  "rmse_1": [
+   {
+    "referencia": "LSTM",
+    "contra": "Persistencia",
+    "n": 16,
+    "mediana_dif": -0.27438471764326094,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "LSTM",
+    "contra": "Media móvil",
+    "n": 16,
+    "mediana_dif": -0.3670419842004776,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "LSTM",
+    "contra": "Ridge",
+    "n": 16,
+    "mediana_dif": -0.0403954103589058,
+    "p": 0.000762939453125,
+    "cliffs_delta": -0.4375,
+    "efecto": "mediano",
+    "referencia_mejor": true,
+    "p_holm": 0.00152587890625
+   },
+   {
+    "referencia": "LSTM",
+    "contra": "MLP",
+    "n": 16,
+    "mediana_dif": 0.0001347362995147705,
+    "p": 0.40374755859375,
+    "cliffs_delta": 0.0234375,
+    "efecto": "despreciable",
+    "referencia_mejor": false,
+    "p_holm": 0.40374755859375
+   }
+  ],
+  "rmse_H": [
+   {
+    "referencia": "LSTM",
+    "contra": "Persistencia",
+    "n": 16,
+    "mediana_dif": -0.40207365453243255,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "LSTM",
+    "contra": "Media móvil",
+    "n": 16,
+    "mediana_dif": -0.2846097230911255,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "LSTM",
+    "contra": "Ridge",
+    "n": 16,
+    "mediana_dif": -0.12376240789890292,
+    "p": 6.103515625e-05,
+    "cliffs_delta": -0.5859375,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "LSTM",
+    "contra": "MLP",
+    "n": 16,
+    "mediana_dif": -0.04683905541896821,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -0.4453125,
+    "efecto": "mediano",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   }
+  ]
+ },
+ "beats": {
+  "Persistencia": true,
+  "Ridge": true
+ },
+ "minutes": 148.3530115286509
+}

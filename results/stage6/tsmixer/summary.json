@@ -1,0 +1,196 @@
+{
+ "model": "tsmixer",
+ "label": "TSMixer",
+ "best_config": {
+  "n_blocks": 6,
+  "d_model": 64,
+  "dropout": 0.1,
+  "norm": "batch",
+  "lr": 0.003,
+  "weight_decay": 0.0
+ },
+ "representation": "crudo",
+ "aggregate": {
+  "rmse_1_mean": {
+   "test": 0.20478706657886506,
+   "test_ood": 0.20352353155612946,
+   "val": 0.20791642367839813
+  },
+  "rmse_1_std": {
+   "test": 0.0030733683112258063,
+   "test_ood": 0.0030471014696222135,
+   "val": 0.0028068969434709885
+  },
+  "rmse_5_mean": {
+   "test": 0.26723809242248536,
+   "test_ood": 0.26872779726982116,
+   "val": 0.2820731222629547
+  },
+  "rmse_5_std": {
+   "test": 0.003580287169964167,
+   "test_ood": 0.003980257561616943,
+   "val": 0.0035988545445858047
+  },
+  "rmse_20_mean": {
+   "test": 0.3360415816307068,
+   "test_ood": 0.3554949343204498,
+   "val": 0.37582162022590637
+  },
+  "rmse_20_std": {
+   "test": 0.005694562645920792,
+   "test_ood": 0.008297373189827892,
+   "val": 0.007305285050266203
+  },
+  "auc_rmse_mean": {
+   "test": 5.595697593688965,
+   "test_ood": 5.76407470703125,
+   "val": 6.081593990325928
+  },
+  "auc_rmse_std": {
+   "test": 0.0747809866543962,
+   "test_ood": 0.1044035360520689,
+   "val": 0.09422066175924389
+  },
+  "reward_rmse_1_mean": {
+   "test": 1.9161590099334718,
+   "test_ood": 2.029896545410156,
+   "val": 2.3604440689086914
+  },
+  "reward_rmse_1_std": {
+   "test": 0.009735160303263577,
+   "test_ood": 0.017700002421216197,
+   "val": 0.021072253482602533
+  },
+  "phase_acc_1_mean": {
+   "test": 0.9795522774327121,
+   "test_ood": 0.978731884057971,
+   "val": 0.9754787784679089
+  },
+  "phase_acc_1_std": {
+   "test": 0.0020019625686342104,
+   "test_ood": 0.002084691184621,
+   "val": 0.0021894738787794077
+  },
+  "rmse_1_congestion_mean": {
+   "test": 0.1859670490026474,
+   "test_ood": 0.18793972730636596,
+   "val": 0.1939629167318344
+  },
+  "rmse_1_congestion_std": {
+   "test": 0.0035324964108012394,
+   "test_ood": 0.004112210144392171,
+   "val": 0.0026129124336464245
+  }
+ },
+ "ci_test": {
+  "rmse_1": [
+   0.20478706657886506,
+   0.20222716629505158,
+   0.20720954537391661
+  ],
+  "rmse_20": [
+   0.3360415816307068,
+   0.3322682738304138,
+   0.340899670124054
+  ]
+ },
+ "comparisons_test": {
+  "rmse_1": [
+   {
+    "referencia": "TSMixer",
+    "contra": "Persistencia",
+    "n": 16,
+    "mediana_dif": -0.27212742120027544,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "TSMixer",
+    "contra": "Media móvil",
+    "n": 16,
+    "mediana_dif": -0.3652550145983696,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "TSMixer",
+    "contra": "Ridge",
+    "n": 16,
+    "mediana_dif": -0.035920101404190066,
+    "p": 0.000579833984375,
+    "cliffs_delta": -0.4375,
+    "efecto": "mediano",
+    "referencia_mejor": true,
+    "p_holm": 0.00115966796875
+   },
+   {
+    "referencia": "TSMixer",
+    "contra": "MLP",
+    "n": 16,
+    "mediana_dif": 0.0008836761116981506,
+    "p": 0.013092041015625,
+    "cliffs_delta": 0.078125,
+    "efecto": "despreciable",
+    "referencia_mejor": false,
+    "p_holm": 0.013092041015625
+   }
+  ],
+  "rmse_H": [
+   {
+    "referencia": "TSMixer",
+    "contra": "Persistencia",
+    "n": 16,
+    "mediana_dif": -0.39458864033222196,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "TSMixer",
+    "contra": "Media móvil",
+    "n": 16,
+    "mediana_dif": -0.28068563044071193,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "TSMixer",
+    "contra": "Ridge",
+    "n": 16,
+    "mediana_dif": -0.12332336306571962,
+    "p": 0.000579833984375,
+    "cliffs_delta": -0.5546875,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.000579833984375
+   },
+   {
+    "referencia": "TSMixer",
+    "contra": "MLP",
+    "n": 16,
+    "mediana_dif": -0.04438117742538453,
+    "p": 0.000152587890625,
+    "cliffs_delta": -0.421875,
+    "efecto": "mediano",
+    "referencia_mejor": true,
+    "p_holm": 0.00030517578125
+   }
+  ]
+ },
+ "beats": {
+  "Persistencia": true,
+  "Ridge": true
+ },
+ "minutes": 147.70481654405594
+}

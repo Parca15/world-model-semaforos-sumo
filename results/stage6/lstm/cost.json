@@ -1,0 +1,22 @@
+{
+ "hardware": "AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD | 4 núcleos | 5.9 GB RAM | torch 2.2.2+cpu (CPU)",
+ "params": 150944,
+ "arch": {
+  "input_dim": 98,
+  "state_dim": 91,
+  "n_tls": 7,
+  "window": 12,
+  "n_layers": 2,
+  "hidden": 93,
+  "dropout": 0.0
+ },
+ "train_s_per_epoch_mean": 12.910339158605083,
+ "train_min_total_mean": 19.96932622830073,
+ "train_peak_rss_mb_max": 660.34765625,
+ "latency_ms_step_b1": 0.8395499990001554,
+ "latency_ms_rollout40_b1": 40.37207000001217,
+ "imagined_steps_per_s_b64": 6164.20379434289,
+ "inference_rss_delta_mb": -5.70703125,
+ "inference_rss_mb": 601.83203125,
+ "threads": 1
+}

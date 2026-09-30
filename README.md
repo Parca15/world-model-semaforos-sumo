@@ -28,7 +28,7 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 3 | Dataset base (`base_v2`) | ✅ |
 | 4 | Baselines | ✅ |
 | 5 | Experimento 0 (AE/VAE) | ✅ (decisión: estado crudo) |
-| 6 | Modelos temporales (LSTM, TSMixer, Transformer) | ⏳ |
+| 6 | Modelos temporales (LSTM, TSMixer, Transformer) | ✅ |
 | 7 | Dream Environment + PPO | — |
 | 8 | PPO directo en SUMO | — |
 | 9 | Evaluación final | — |
@@ -141,5 +141,15 @@ Baselines con λ = 1 (antes del cambio de pérdida; se recalculan con λ = 7/91 
 - Etapa 6: LSTM, TSMixer y Transformer (~150 k parámetros cada uno) con el mismo protocolo: 12 configuraciones
   de búsqueda y 5 semillas finales por modelo (`wm/models/temporal.py`, `python -m wm.experiments.stage6_temporal`).
   Resultados por modelo en `results/stage6/<modelo>/` y comparación en `results/stage6_comparison.csv`.
+  Test (media ± desv., 5 semillas; RMSE del estado normalizado), frente a Ridge 0,245 / 0,442 y MLP 0,203 / 0,374:
+
+  | Modelo | Parámetros | RMSE 1 paso | RMSE 20 pasos |
+  |---|---|---|---|
+  | LSTM | 150 944 | 0,204 ± 0,002 | 0,335 ± 0,003 |
+  | TSMixer | 150 251 | 0,205 ± 0,003 | 0,336 ± 0,006 |
+  | Transformer | 149 818 | 0,208 ± 0,004 | 0,375 ± 0,008 |
+
+  Los tres superan a persistencia y Ridge (Wilcoxon + Holm). LSTM y TSMixer no difieren de forma significativa;
+  ambos superan al Transformer a 20 pasos (p_Holm < 0,001, δ de Cliff ≈ −0,45).
   Diagnóstico de la comparación TSMixer–Ridge (200 épocas y λ = 7/91 en la pérdida) en
   [`results/stage6_diagnostico.md`](results/stage6_diagnostico.md).

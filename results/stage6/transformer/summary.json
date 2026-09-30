@@ -1,0 +1,196 @@
+{
+ "model": "transformer",
+ "label": "Transformer",
+ "best_config": {
+  "n_layers": 4,
+  "d_model": 64,
+  "n_heads": 4,
+  "dropout": 0.0,
+  "lr": 0.003,
+  "weight_decay": 0.001
+ },
+ "representation": "crudo",
+ "aggregate": {
+  "rmse_1_mean": {
+   "test": 0.20788926780223846,
+   "test_ood": 0.2062593013048172,
+   "val": 0.21230545938014983
+  },
+  "rmse_1_std": {
+   "test": 0.0035537829500299424,
+   "test_ood": 0.0031354090696933453,
+   "val": 0.00333006522360538
+  },
+  "rmse_5_mean": {
+   "test": 0.28271872401237486,
+   "test_ood": 0.2834565222263336,
+   "val": 0.2987602651119232
+  },
+  "rmse_5_std": {
+   "test": 0.0038214393885043817,
+   "test_ood": 0.0036384858459096534,
+   "val": 0.003753983005554921
+  },
+  "rmse_20_mean": {
+   "test": 0.3750206470489502,
+   "test_ood": 0.393528026342392,
+   "val": 0.4207975924015045
+  },
+  "rmse_20_std": {
+   "test": 0.008247558462098238,
+   "test_ood": 0.007644611532982418,
+   "val": 0.008910976179151889
+  },
+  "auc_rmse_mean": {
+   "test": 6.045902729034424,
+   "test_ood": 6.200608348846435,
+   "val": 6.586515140533447
+  },
+  "auc_rmse_std": {
+   "test": 0.10373973843421866,
+   "test_ood": 0.09861912705304307,
+   "val": 0.10117249012720644
+  },
+  "reward_rmse_1_mean": {
+   "test": 1.9889831066131591,
+   "test_ood": 2.089244318008423,
+   "val": 2.4570805549621584
+  },
+  "reward_rmse_1_std": {
+   "test": 0.013174192702438591,
+   "test_ood": 0.02004338927704966,
+   "val": 0.02283272876782461
+  },
+  "phase_acc_1_mean": {
+   "test": 0.9792261904761904,
+   "test_ood": 0.9780072463768116,
+   "val": 0.9734239130434783
+  },
+  "phase_acc_1_std": {
+   "test": 0.0024129223747514673,
+   "test_ood": 0.001835139799721479,
+   "val": 0.0022555168158514558
+  },
+  "rmse_1_congestion_mean": {
+   "test": 0.1884813517332077,
+   "test_ood": 0.1906114786863327,
+   "val": 0.20007144212722777
+  },
+  "rmse_1_congestion_std": {
+   "test": 0.002103865168341524,
+   "test_ood": 0.00242209347900571,
+   "val": 0.0023223090477323535
+  }
+ },
+ "ci_test": {
+  "rmse_1": [
+   0.20788926780223846,
+   0.2052292764186859,
+   0.21078696250915527
+  ],
+  "rmse_20": [
+   0.3750206470489502,
+   0.3694631987810135,
+   0.38234918713569643
+  ]
+ },
+ "comparisons_test": {
+  "rmse_1": [
+   {
+    "referencia": "Transformer",
+    "contra": "Persistencia",
+    "n": 16,
+    "mediana_dif": -0.27269460409879687,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "Transformer",
+    "contra": "Media móvil",
+    "n": 16,
+    "mediana_dif": -0.3641584351658821,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "Transformer",
+    "contra": "Ridge",
+    "n": 16,
+    "mediana_dif": -0.03660876452922822,
+    "p": 0.001678466796875,
+    "cliffs_delta": -0.40625,
+    "efecto": "mediano",
+    "referencia_mejor": true,
+    "p_holm": 0.001678466796875
+   },
+   {
+    "referencia": "Transformer",
+    "contra": "MLP",
+    "n": 16,
+    "mediana_dif": 0.00393887013196946,
+    "p": 6.103515625e-05,
+    "cliffs_delta": 0.140625,
+    "efecto": "despreciable",
+    "referencia_mejor": false,
+    "p_holm": 0.0001220703125
+   }
+  ],
+  "rmse_H": [
+   {
+    "referencia": "Transformer",
+    "contra": "Persistencia",
+    "n": 16,
+    "mediana_dif": -0.36386590600013735,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -1.0,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "Transformer",
+    "contra": "Media móvil",
+    "n": 16,
+    "mediana_dif": -0.24224075078964233,
+    "p": 3.0517578125e-05,
+    "cliffs_delta": -0.9921875,
+    "efecto": "grande",
+    "referencia_mejor": true,
+    "p_holm": 0.0001220703125
+   },
+   {
+    "referencia": "Transformer",
+    "contra": "Ridge",
+    "n": 16,
+    "mediana_dif": -0.07706350088119507,
+    "p": 0.001312255859375,
+    "cliffs_delta": -0.453125,
+    "efecto": "mediano",
+    "referencia_mejor": true,
+    "p_holm": 0.00262451171875
+   },
+   {
+    "referencia": "Transformer",
+    "contra": "MLP",
+    "n": 16,
+    "mediana_dif": -0.0022383928298950195,
+    "p": 0.899932861328125,
+    "cliffs_delta": -0.0234375,
+    "efecto": "despreciable",
+    "referencia_mejor": true,
+    "p_holm": 0.899932861328125
+   }
+  ]
+ },
+ "beats": {
+  "Persistencia": true,
+  "Ridge": true
+ },
+ "minutes": 346.0675827383995
+}
