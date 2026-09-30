@@ -30,7 +30,7 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 5 | Experimento 0 (AE/VAE) | ✅ (decisión: estado crudo) |
 | 6 | Modelos temporales (LSTM, TSMixer, Transformer) | ✅ |
 | 7 | Dream Environment + PPO | ✅ (3 modelos × 5 semillas) |
-| 8 | PPO directo en SUMO | — |
+| 8 | PPO directo en SUMO | ✅ (3 semillas) |
 | 9 | Evaluación final | — |
 | 10 | Análisis y redacción | — |
 
