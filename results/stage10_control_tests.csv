@@ -1,0 +1,276 @@
+métrica,referencia,contra,n,mediana_dif,p,cliffs_delta,efecto,referencia_mejor,p_holm
+waiting_time_s,WM + LSTM,Tiempo fijo,10,12.976136681395687,0.625,0.2,pequeño,False,0.826171875
+waiting_time_s,WM + LSTM,Actuado,10,57.020012180926855,0.001953125,1.0,grande,False,0.017578125
+waiting_time_s,WM + LSTM,Max-Pressure,10,20.96921708970735,0.001953125,0.72,grande,False,0.017578125
+waiting_time_s,WM + LSTM,PPO directo,10,33.28626420559692,0.009765625,0.56,grande,False,0.05859375
+waiting_time_s,WM + LSTM,WM + TSMixer,10,8.821884500229395,0.322265625,0.22,pequeño,False,0.826171875
+waiting_time_s,WM + LSTM,WM + Transformer,10,8.282636027158048,0.064453125,0.2,pequeño,False,0.2578125
+waiting_time_s,WM + LSTM,WM + LSTM + planificación,10,19.426580817052887,0.001953125,0.7,grande,False,0.017578125
+waiting_time_s,WM + LSTM,WM + TSMixer + planificación,10,14.3726764845104,0.02734375,0.44,mediano,False,0.13671875
+waiting_time_s,WM + LSTM,WM + Transformer + planificación,10,7.393255297653731,0.275390625,0.14,despreciable,False,0.826171875
+waiting_time_s,WM + TSMixer,Tiempo fijo,10,-5.973495145823712,0.193359375,-0.12,despreciable,True,0.966796875
+waiting_time_s,WM + TSMixer,Actuado,10,50.66187882093209,0.001953125,0.92,grande,False,0.017578125
+waiting_time_s,WM + TSMixer,Max-Pressure,10,16.39281072558189,0.083984375,0.26,pequeño,False,0.587890625
+waiting_time_s,WM + TSMixer,PPO directo,10,17.358307384236262,0.001953125,0.4,mediano,False,0.017578125
+waiting_time_s,WM + TSMixer,WM + LSTM,10,-8.821884500229395,0.322265625,-0.22,pequeño,True,1.0
+waiting_time_s,WM + TSMixer,WM + Transformer,10,-1.1860060624243118,0.76953125,-0.04,despreciable,True,1.0
+waiting_time_s,WM + TSMixer,WM + LSTM + planificación,10,11.855623551685994,0.130859375,0.22,pequeño,False,0.78515625
+waiting_time_s,WM + TSMixer,WM + TSMixer + planificación,10,3.028034122223197,0.322265625,0.1,despreciable,False,1.0
+waiting_time_s,WM + TSMixer,WM + Transformer + planificación,10,-6.299829833686161,0.556640625,-0.08,despreciable,True,1.0
+waiting_time_s,WM + Transformer,Tiempo fijo,10,-0.5820180872374934,0.76953125,-0.02,despreciable,True,1.0
+waiting_time_s,WM + Transformer,Actuado,10,51.20112729400344,0.001953125,1.0,grande,False,0.017578125
+waiting_time_s,WM + Transformer,Max-Pressure,10,16.932059198653235,0.009765625,0.32,pequeño,False,0.078125
+waiting_time_s,WM + Transformer,PPO directo,10,21.46409985008951,0.009765625,0.42,mediano,False,0.078125
+waiting_time_s,WM + Transformer,WM + LSTM,10,-8.282636027158048,0.064453125,-0.2,pequeño,True,0.322265625
+waiting_time_s,WM + Transformer,WM + TSMixer,10,1.1860060624243118,0.76953125,0.04,despreciable,False,1.0
+waiting_time_s,WM + Transformer,WM + LSTM + planificación,10,11.565006631686785,0.01953125,0.28,pequeño,False,0.1171875
+waiting_time_s,WM + Transformer,WM + TSMixer + planificación,10,1.3894273489121858,0.275390625,0.16,pequeño,False,1.0
+waiting_time_s,WM + Transformer,WM + Transformer + planificación,10,-1.6273173338449993,0.556640625,-0.04,despreciable,True,1.0
+waiting_time_s,WM + LSTM + planificación,Tiempo fijo,10,-4.579730415375629,0.193359375,-0.18,pequeño,True,0.392578125
+waiting_time_s,WM + LSTM + planificación,Actuado,10,37.04565673993072,0.001953125,1.0,grande,False,0.017578125
+waiting_time_s,WM + LSTM + planificación,Max-Pressure,10,2.366225531590189,0.013671875,0.2,pequeño,False,0.08203125
+waiting_time_s,WM + LSTM + planificación,PPO directo,10,16.43733892571173,0.4921875,0.3,pequeño,False,0.4921875
+waiting_time_s,WM + LSTM + planificación,WM + LSTM,10,-19.426580817052887,0.001953125,-0.7,grande,True,0.017578125
+waiting_time_s,WM + LSTM + planificación,WM + TSMixer,10,-11.855623551685994,0.130859375,-0.22,pequeño,True,0.392578125
+waiting_time_s,WM + LSTM + planificación,WM + Transformer,10,-11.565006631686785,0.01953125,-0.28,pequeño,True,0.09765625
+waiting_time_s,WM + LSTM + planificación,WM + TSMixer + planificación,10,-3.7356028721869876,0.01953125,-0.22,pequeño,True,0.09765625
+waiting_time_s,WM + LSTM + planificación,WM + Transformer + planificación,10,-13.03417889329932,0.009765625,-0.38,mediano,True,0.068359375
+waiting_time_s,WM + TSMixer + planificación,Tiempo fijo,10,-2.5501008723698035,0.275390625,-0.04,despreciable,True,0.826171875
+waiting_time_s,WM + TSMixer + planificación,Actuado,10,40.48760825028475,0.001953125,1.0,grande,False,0.017578125
+waiting_time_s,WM + TSMixer + planificación,Max-Pressure,10,7.354386288583775,0.009765625,0.22,pequeño,False,0.068359375
+waiting_time_s,WM + TSMixer + planificación,PPO directo,10,17.760026651831428,0.00390625,0.42,mediano,False,0.03125
+waiting_time_s,WM + TSMixer + planificación,WM + LSTM,10,-14.3726764845104,0.02734375,-0.44,mediano,True,0.13671875
+waiting_time_s,WM + TSMixer + planificación,WM + TSMixer,10,-3.028034122223197,0.322265625,-0.1,despreciable,True,0.826171875
+waiting_time_s,WM + TSMixer + planificación,WM + Transformer,10,-1.3894273489121858,0.275390625,-0.16,pequeño,True,0.826171875
+waiting_time_s,WM + TSMixer + planificación,WM + LSTM + planificación,10,3.7356028721869876,0.01953125,0.22,pequeño,False,0.1171875
+waiting_time_s,WM + TSMixer + planificación,WM + Transformer + planificación,10,-3.7463903117400577,0.064453125,-0.18,pequeño,True,0.2578125
+waiting_time_s,WM + Transformer + planificación,Tiempo fijo,10,0.10541703937521874,0.845703125,0.06,despreciable,False,1.0
+waiting_time_s,WM + Transformer + planificación,Actuado,10,48.57706897095396,0.001953125,1.0,grande,False,0.017578125
+waiting_time_s,WM + Transformer + planificación,Max-Pressure,10,16.104162108618425,0.009765625,0.38,mediano,False,0.068359375
+waiting_time_s,WM + Transformer + planificación,PPO directo,10,18.081268048715522,0.00390625,0.46,mediano,False,0.03125
+waiting_time_s,WM + Transformer + planificación,WM + LSTM,10,-7.393255297653731,0.275390625,-0.14,despreciable,True,1.0
+waiting_time_s,WM + Transformer + planificación,WM + TSMixer,10,6.299829833686161,0.556640625,0.08,despreciable,False,1.0
+waiting_time_s,WM + Transformer + planificación,WM + Transformer,10,1.6273173338449993,0.556640625,0.04,despreciable,False,1.0
+waiting_time_s,WM + Transformer + planificación,WM + LSTM + planificación,10,13.03417889329932,0.009765625,0.38,mediano,False,0.068359375
+waiting_time_s,WM + Transformer + planificación,WM + TSMixer + planificación,10,3.7463903117400577,0.064453125,0.18,pequeño,False,0.322265625
+waiting_time_s,PPO directo,Tiempo fijo,10,-20.223534889188695,0.001953125,-0.42,mediano,True,0.001953125
+travel_time_s,WM + LSTM,Tiempo fijo,10,16.22984556998263,0.625,0.2,pequeño,False,0.86328125
+travel_time_s,WM + LSTM,Actuado,10,64.07553677062818,0.001953125,1.0,grande,False,0.017578125
+travel_time_s,WM + LSTM,Max-Pressure,10,23.400907394598377,0.001953125,0.64,grande,False,0.017578125
+travel_time_s,WM + LSTM,PPO directo,10,36.3785449246904,0.009765625,0.54,grande,False,0.05859375
+travel_time_s,WM + LSTM,WM + TSMixer,10,6.948110027336085,0.431640625,0.1,despreciable,False,0.86328125
+travel_time_s,WM + LSTM,WM + Transformer,10,8.20392386775471,0.130859375,0.16,pequeño,False,0.5234375
+travel_time_s,WM + LSTM,WM + LSTM + planificación,10,23.884791136717638,0.001953125,0.62,grande,False,0.017578125
+travel_time_s,WM + LSTM,WM + TSMixer + planificación,10,16.360624841272866,0.01953125,0.38,mediano,False,0.09765625
+travel_time_s,WM + LSTM,WM + Transformer + planificación,10,11.242188220212029,0.130859375,0.18,pequeño,False,0.5234375
+travel_time_s,WM + TSMixer,Tiempo fijo,10,-2.763675559857475,0.6953125,-0.06,despreciable,True,1.0
+travel_time_s,WM + TSMixer,Actuado,10,61.22791660177843,0.001953125,0.92,grande,False,0.017578125
+travel_time_s,WM + TSMixer,Max-Pressure,10,21.252722365212648,0.083984375,0.24,pequeño,False,0.587890625
+travel_time_s,WM + TSMixer,PPO directo,10,22.33613460868122,0.001953125,0.32,pequeño,False,0.017578125
+travel_time_s,WM + TSMixer,WM + LSTM,10,-6.948110027336085,0.431640625,-0.1,despreciable,True,1.0
+travel_time_s,WM + TSMixer,WM + Transformer,10,0.4939066031574413,0.921875,0.02,despreciable,False,1.0
+travel_time_s,WM + TSMixer,WM + LSTM + planificación,10,18.45728160144175,0.10546875,0.24,pequeño,False,0.6328125
+travel_time_s,WM + TSMixer,WM + TSMixer + planificación,10,8.98256159033447,0.193359375,0.12,despreciable,False,0.966796875
+travel_time_s,WM + TSMixer,WM + Transformer + planificación,10,-2.7844138168895967,1.0,-0.02,despreciable,True,1.0
+travel_time_s,WM + Transformer,Tiempo fijo,10,1.7027264413668064,1.0,0.02,despreciable,False,1.0
+travel_time_s,WM + Transformer,Actuado,10,59.97210276135981,0.001953125,0.96,grande,False,0.017578125
+travel_time_s,WM + Transformer,Max-Pressure,10,19.953808837123958,0.009765625,0.26,pequeño,False,0.078125
+travel_time_s,WM + Transformer,PPO directo,10,23.91082328253806,0.009765625,0.36,mediano,False,0.078125
+travel_time_s,WM + Transformer,WM + LSTM,10,-8.20392386775471,0.130859375,-0.16,pequeño,True,0.52734375
+travel_time_s,WM + Transformer,WM + TSMixer,10,-0.4939066031574413,0.921875,-0.02,despreciable,True,1.0
+travel_time_s,WM + Transformer,WM + LSTM + planificación,10,16.039294375544287,0.013671875,0.28,pequeño,False,0.08203125
+travel_time_s,WM + Transformer,WM + TSMixer + planificación,10,3.9942266701965963,0.10546875,0.18,pequeño,False,0.52734375
+travel_time_s,WM + Transformer,WM + Transformer + planificación,10,-0.44236479369172343,1.0,0.0,despreciable,True,1.0
+travel_time_s,WM + LSTM + planificación,Tiempo fijo,10,-4.640615186121494,0.232421875,-0.14,despreciable,True,0.697265625
+travel_time_s,WM + LSTM + planificación,Actuado,10,40.17731595423432,0.001953125,0.98,grande,False,0.017578125
+travel_time_s,WM + LSTM + planificación,Max-Pressure,10,0.1604414301113195,0.625,0.08,despreciable,False,0.984375
+travel_time_s,WM + LSTM + planificación,PPO directo,10,16.22517071402075,0.4921875,0.28,pequeño,False,0.984375
+travel_time_s,WM + LSTM + planificación,WM + LSTM,10,-23.884791136717638,0.001953125,-0.62,grande,True,0.017578125
+travel_time_s,WM + LSTM + planificación,WM + TSMixer,10,-18.45728160144175,0.10546875,-0.24,pequeño,True,0.421875
+travel_time_s,WM + LSTM + planificación,WM + Transformer,10,-16.039294375544287,0.013671875,-0.28,pequeño,True,0.068359375
+travel_time_s,WM + LSTM + planificación,WM + TSMixer + planificación,10,-4.738728670022866,0.009765625,-0.22,pequeño,True,0.068359375
+travel_time_s,WM + LSTM + planificación,WM + Transformer + planificación,10,-14.744996020798354,0.009765625,-0.36,mediano,True,0.068359375
+travel_time_s,WM + TSMixer + planificación,Tiempo fijo,10,-1.9087574624616508,0.275390625,-0.04,despreciable,True,0.38671875
+travel_time_s,WM + TSMixer + planificación,Actuado,10,45.131457507250516,0.001953125,0.98,grande,False,0.017578125
+travel_time_s,WM + TSMixer + planificación,Max-Pressure,10,6.555867453458021,0.009765625,0.22,pequeño,False,0.078125
+travel_time_s,WM + TSMixer + planificación,PPO directo,10,18.239941892246122,0.009765625,0.36,mediano,False,0.078125
+travel_time_s,WM + TSMixer + planificación,WM + LSTM,10,-16.360624841272866,0.01953125,-0.38,mediano,True,0.09765625
+travel_time_s,WM + TSMixer + planificación,WM + TSMixer,10,-8.98256159033447,0.193359375,-0.12,despreciable,True,0.38671875
+travel_time_s,WM + TSMixer + planificación,WM + Transformer,10,-3.9942266701965963,0.10546875,-0.18,pequeño,True,0.31640625
+travel_time_s,WM + TSMixer + planificación,WM + LSTM + planificación,10,4.738728670022866,0.009765625,0.22,pequeño,False,0.078125
+travel_time_s,WM + TSMixer + planificación,WM + Transformer + planificación,10,-3.8594970084649134,0.048828125,-0.18,pequeño,True,0.1953125
+travel_time_s,WM + Transformer + planificación,Tiempo fijo,10,1.195747471340951,0.845703125,0.06,despreciable,False,1.0
+travel_time_s,WM + Transformer + planificación,Actuado,10,53.421440050575555,0.001953125,0.96,grande,False,0.017578125
+travel_time_s,WM + Transformer + planificación,Max-Pressure,10,14.993720163904086,0.009765625,0.38,mediano,False,0.078125
+travel_time_s,WM + Transformer + planificación,PPO directo,10,18.25859721677938,0.009765625,0.42,mediano,False,0.078125
+travel_time_s,WM + Transformer + planificación,WM + LSTM,10,-11.242188220212029,0.130859375,-0.18,pequeño,True,0.5234375
+travel_time_s,WM + Transformer + planificación,WM + TSMixer,10,2.7844138168895967,1.0,0.02,despreciable,False,1.0
+travel_time_s,WM + Transformer + planificación,WM + Transformer,10,0.44236479369172343,1.0,0.0,despreciable,False,1.0
+travel_time_s,WM + Transformer + planificación,WM + LSTM + planificación,10,14.744996020798354,0.009765625,0.36,mediano,False,0.078125
+travel_time_s,WM + Transformer + planificación,WM + TSMixer + planificación,10,3.8594970084649134,0.048828125,0.18,pequeño,False,0.244140625
+travel_time_s,PPO directo,Tiempo fijo,10,-19.65824083138895,0.001953125,-0.38,mediano,True,0.001953125
+queue_mean_m,WM + LSTM,Tiempo fijo,10,10.786212921142578,0.845703125,0.12,despreciable,False,1.0
+queue_mean_m,WM + LSTM,Actuado,10,71.56712112426759,0.001953125,0.72,grande,False,0.017578125
+queue_mean_m,WM + LSTM,Max-Pressure,10,29.576186370849612,0.001953125,0.38,mediano,False,0.017578125
+queue_mean_m,WM + LSTM,PPO directo,10,26.930949147542314,0.009765625,0.36,mediano,False,0.05859375
+queue_mean_m,WM + LSTM,WM + TSMixer,10,11.00495376586914,0.322265625,0.08,despreciable,False,0.966796875
+queue_mean_m,WM + LSTM,WM + Transformer,10,7.104565811157226,0.064453125,0.12,despreciable,False,0.322265625
+queue_mean_m,WM + LSTM,WM + LSTM + planificación,10,24.809589385986335,0.001953125,0.32,pequeño,False,0.017578125
+queue_mean_m,WM + LSTM,WM + TSMixer + planificación,10,12.403310012817382,0.10546875,0.2,pequeño,False,0.421875
+queue_mean_m,WM + LSTM,WM + Transformer + planificación,10,1.5581062316894503,0.6953125,0.02,despreciable,False,1.0
+queue_mean_m,WM + TSMixer,Tiempo fijo,10,-6.474044036865234,0.10546875,-0.14,despreciable,True,0.6328125
+queue_mean_m,WM + TSMixer,Actuado,10,68.91157913208008,0.001953125,0.6,grande,False,0.017578125
+queue_mean_m,WM + TSMixer,Max-Pressure,10,20.482563018798828,0.083984375,0.14,despreciable,False,0.587890625
+queue_mean_m,WM + TSMixer,PPO directo,10,21.801763661702466,0.001953125,0.28,pequeño,False,0.017578125
+queue_mean_m,WM + TSMixer,WM + LSTM,10,-11.00495376586914,0.322265625,-0.08,despreciable,True,0.966796875
+queue_mean_m,WM + TSMixer,WM + Transformer,10,-3.417128753662112,0.556640625,-0.08,despreciable,True,0.984375
+queue_mean_m,WM + TSMixer,WM + LSTM + planificación,10,12.2775894165039,0.16015625,0.12,despreciable,False,0.80078125
+queue_mean_m,WM + TSMixer,WM + TSMixer + planificación,10,-0.07370681762696307,0.4921875,0.06,despreciable,True,0.984375
+queue_mean_m,WM + TSMixer,WM + Transformer + planificación,10,-6.484595108032227,0.16015625,-0.1,despreciable,True,0.80078125
+queue_mean_m,WM + Transformer,Tiempo fijo,10,-1.0455684661865199,0.6953125,-0.06,despreciable,True,1.0
+queue_mean_m,WM + Transformer,Actuado,10,71.46443405151368,0.001953125,0.6,grande,False,0.017578125
+queue_mean_m,WM + Transformer,Max-Pressure,10,23.813059234619146,0.009765625,0.2,pequeño,False,0.078125
+queue_mean_m,WM + Transformer,PPO directo,10,29.06206563313802,0.009765625,0.26,pequeño,False,0.078125
+queue_mean_m,WM + Transformer,WM + LSTM,10,-7.104565811157226,0.064453125,-0.12,despreciable,True,0.322265625
+queue_mean_m,WM + Transformer,WM + TSMixer,10,3.417128753662112,0.556640625,0.08,despreciable,False,1.0
+queue_mean_m,WM + Transformer,WM + LSTM + planificación,10,15.526947021484382,0.009765625,0.2,pequeño,False,0.078125
+queue_mean_m,WM + Transformer,WM + TSMixer + planificación,10,1.5377456665039126,0.6953125,0.08,despreciable,False,1.0
+queue_mean_m,WM + Transformer,WM + Transformer + planificación,10,-3.1006076812744183,0.275390625,-0.08,despreciable,True,1.0
+queue_mean_m,WM + LSTM + planificación,Tiempo fijo,10,-6.864866638183585,0.193359375,-0.14,despreciable,True,0.48046875
+queue_mean_m,WM + LSTM + planificación,Actuado,10,50.29933547973633,0.001953125,0.6,grande,False,0.017578125
+queue_mean_m,WM + LSTM + planificación,Max-Pressure,10,4.829899597167973,0.001953125,0.16,pequeño,False,0.017578125
+queue_mean_m,WM + LSTM + planificación,PPO directo,10,13.462749036153156,0.4921875,0.16,pequeño,False,0.4921875
+queue_mean_m,WM + LSTM + planificación,WM + LSTM,10,-24.809589385986335,0.001953125,-0.32,pequeño,True,0.017578125
+queue_mean_m,WM + LSTM + planificación,WM + TSMixer,10,-12.2775894165039,0.16015625,-0.12,despreciable,True,0.48046875
+queue_mean_m,WM + LSTM + planificación,WM + Transformer,10,-15.526947021484382,0.009765625,-0.2,pequeño,True,0.05859375
+queue_mean_m,WM + LSTM + planificación,WM + TSMixer + planificación,10,-4.51144180297851,0.009765625,-0.14,despreciable,True,0.05859375
+queue_mean_m,WM + LSTM + planificación,WM + Transformer + planificación,10,-21.730089569091795,0.009765625,-0.22,pequeño,True,0.05859375
+queue_mean_m,WM + TSMixer + planificación,Tiempo fijo,10,-4.000096511840823,0.232421875,-0.1,despreciable,True,0.697265625
+queue_mean_m,WM + TSMixer + planificación,Actuado,10,54.81077728271484,0.001953125,0.6,grande,False,0.017578125
+queue_mean_m,WM + TSMixer + planificación,Max-Pressure,10,10.979096984863276,0.009765625,0.2,pequeño,False,0.068359375
+queue_mean_m,WM + TSMixer + planificación,PPO directo,10,17.473252614339188,0.00390625,0.26,pequeño,False,0.03125
+queue_mean_m,WM + TSMixer + planificación,WM + LSTM,10,-12.403310012817382,0.10546875,-0.2,pequeño,True,0.421875
+queue_mean_m,WM + TSMixer + planificación,WM + TSMixer,10,0.07370681762696307,0.4921875,-0.06,despreciable,False,0.984375
+queue_mean_m,WM + TSMixer + planificación,WM + Transformer,10,-1.5377456665039126,0.6953125,-0.08,despreciable,True,0.984375
+queue_mean_m,WM + TSMixer + planificación,WM + LSTM + planificación,10,4.51144180297851,0.009765625,0.14,despreciable,False,0.068359375
+queue_mean_m,WM + TSMixer + planificación,WM + Transformer + planificación,10,-10.995736694335946,0.037109375,-0.1,despreciable,True,0.185546875
+queue_mean_m,WM + Transformer + planificación,Tiempo fijo,10,0.010551071166993609,1.0,0.04,despreciable,False,1.0
+queue_mean_m,WM + Transformer + planificación,Actuado,10,69.5899528503418,0.001953125,0.64,grande,False,0.017578125
+queue_mean_m,WM + Transformer + planificación,Max-Pressure,10,26.55998916625977,0.009765625,0.26,pequeño,False,0.068359375
+queue_mean_m,WM + Transformer + planificación,PPO directo,10,27.125319163004555,0.00390625,0.32,pequeño,False,0.03125
+queue_mean_m,WM + Transformer + planificación,WM + LSTM,10,-1.5581062316894503,0.6953125,-0.02,despreciable,True,1.0
+queue_mean_m,WM + Transformer + planificación,WM + TSMixer,10,6.484595108032227,0.16015625,0.1,despreciable,False,0.640625
+queue_mean_m,WM + Transformer + planificación,WM + Transformer,10,3.1006076812744183,0.275390625,0.08,despreciable,False,0.826171875
+queue_mean_m,WM + Transformer + planificación,WM + LSTM + planificación,10,21.730089569091795,0.009765625,0.22,pequeño,False,0.068359375
+queue_mean_m,WM + Transformer + planificación,WM + TSMixer + planificación,10,10.995736694335946,0.037109375,0.1,despreciable,False,0.185546875
+queue_mean_m,PPO directo,Tiempo fijo,10,-26.508813222249344,0.001953125,-0.28,pequeño,True,0.001953125
+throughput,WM + LSTM,Tiempo fijo,10,-116.30000000000018,0.025390625,-0.1,despreciable,False,0.05859375
+throughput,WM + LSTM,Actuado,10,-186.5,0.001953125,-0.18,pequeño,False,0.017578125
+throughput,WM + LSTM,Max-Pressure,10,-162.0,0.001953125,-0.18,pequeño,False,0.017578125
+throughput,WM + LSTM,PPO directo,10,-159.23333333333358,0.001953125,-0.18,pequeño,False,0.017578125
+throughput,WM + LSTM,WM + TSMixer,10,-42.700000000000045,0.431640625,-0.08,despreciable,False,0.431640625
+throughput,WM + LSTM,WM + Transformer,10,-71.70000000000027,0.001953125,-0.16,pequeño,False,0.017578125
+throughput,WM + LSTM,WM + LSTM + planificación,10,-168.5,0.001953125,-0.18,pequeño,False,0.017578125
+throughput,WM + LSTM,WM + TSMixer + planificación,10,-145.5999999999999,0.001953125,-0.18,pequeño,False,0.017578125
+throughput,WM + LSTM,WM + Transformer + planificación,10,-53.399999999999864,0.01953125,-0.1,despreciable,False,0.05859375
+throughput,WM + TSMixer,Tiempo fijo,10,-78.59999999999991,0.02734375,-0.1,despreciable,False,0.13671875
+throughput,WM + TSMixer,Actuado,10,-137.5999999999999,0.005859375,-0.14,despreciable,False,0.046875
+throughput,WM + TSMixer,Max-Pressure,10,-113.09999999999991,0.01953125,-0.12,despreciable,False,0.1171875
+throughput,WM + TSMixer,PPO directo,10,-127.4333333333334,0.001953125,-0.16,pequeño,False,0.017578125
+throughput,WM + TSMixer,WM + LSTM,10,42.700000000000045,0.431640625,0.08,despreciable,True,0.86328125
+throughput,WM + TSMixer,WM + Transformer,10,-22.800000000000182,0.16015625,-0.06,despreciable,False,0.48046875
+throughput,WM + TSMixer,WM + LSTM + planificación,10,-119.59999999999991,0.013671875,-0.12,despreciable,False,0.095703125
+throughput,WM + TSMixer,WM + TSMixer + planificación,10,-114.0,0.02734375,-0.1,despreciable,False,0.13671875
+throughput,WM + TSMixer,WM + Transformer + planificación,10,-15.100000000000364,0.431640625,-0.04,despreciable,False,0.86328125
+throughput,WM + Transformer,Tiempo fijo,10,-30.40000000000009,0.375,-0.04,despreciable,False,0.75
+throughput,WM + Transformer,Actuado,10,-114.79999999999973,0.001953125,-0.16,pequeño,False,0.017578125
+throughput,WM + Transformer,Max-Pressure,10,-90.29999999999973,0.009765625,-0.12,despreciable,False,0.048828125
+throughput,WM + Transformer,PPO directo,10,-81.86666666666633,0.001953125,-0.16,pequeño,False,0.017578125
+throughput,WM + Transformer,WM + LSTM,10,71.70000000000027,0.001953125,0.16,pequeño,True,0.017578125
+throughput,WM + Transformer,WM + TSMixer,10,22.800000000000182,0.16015625,0.06,despreciable,True,0.48046875
+throughput,WM + Transformer,WM + LSTM + planificación,10,-96.79999999999973,0.00390625,-0.14,despreciable,False,0.0234375
+throughput,WM + Transformer,WM + TSMixer + planificación,10,-57.29999999999973,0.009765625,-0.12,despreciable,False,0.048828125
+throughput,WM + Transformer,WM + Transformer + planificación,10,0.5,0.76953125,0.02,despreciable,True,0.76953125
+throughput,WM + LSTM + planificación,Tiempo fijo,10,26.09999999999991,0.009765625,0.1,despreciable,True,0.048828125
+throughput,WM + LSTM + planificación,Actuado,10,-14.400000000000091,0.001953125,-0.1,despreciable,False,0.017578125
+throughput,WM + LSTM + planificación,Max-Pressure,10,-0.2999999999999545,0.845703125,0.0,despreciable,False,1.0
+throughput,WM + LSTM + planificación,PPO directo,10,-8.566666666666833,1.0,0.0,despreciable,False,1.0
+throughput,WM + LSTM + planificación,WM + LSTM,10,168.5,0.001953125,0.18,pequeño,True,0.017578125
+throughput,WM + LSTM + planificación,WM + TSMixer,10,119.59999999999991,0.013671875,0.12,despreciable,True,0.0546875
+throughput,WM + LSTM + planificación,WM + Transformer,10,96.79999999999973,0.00390625,0.14,despreciable,True,0.02734375
+throughput,WM + LSTM + planificación,WM + TSMixer + planificación,10,6.400000000000091,0.10546875,0.04,despreciable,True,0.31640625
+throughput,WM + LSTM + planificación,WM + Transformer + planificación,10,86.19999999999982,0.005859375,0.14,despreciable,True,0.03515625
+throughput,WM + TSMixer + planificación,Tiempo fijo,10,20.799999999999727,0.044921875,0.1,despreciable,True,0.1796875
+throughput,WM + TSMixer + planificación,Actuado,10,-22.0,0.001953125,-0.12,despreciable,False,0.017578125
+throughput,WM + TSMixer + planificación,Max-Pressure,10,-2.300000000000182,0.556640625,-0.02,despreciable,False,1.0
+throughput,WM + TSMixer + planificación,PPO directo,10,-10.366666666666788,0.845703125,-0.02,despreciable,False,1.0
+throughput,WM + TSMixer + planificación,WM + LSTM,10,145.5999999999999,0.001953125,0.18,pequeño,True,0.017578125
+throughput,WM + TSMixer + planificación,WM + TSMixer,10,114.0,0.02734375,0.1,despreciable,True,0.13671875
+throughput,WM + TSMixer + planificación,WM + Transformer,10,57.29999999999973,0.009765625,0.12,despreciable,True,0.068359375
+throughput,WM + TSMixer + planificación,WM + LSTM + planificación,10,-6.400000000000091,0.10546875,-0.04,despreciable,False,0.31640625
+throughput,WM + TSMixer + planificación,WM + Transformer + planificación,10,86.5,0.009765625,0.12,despreciable,True,0.068359375
+throughput,WM + Transformer + planificación,Tiempo fijo,10,-19.09999999999991,0.4921875,0.0,despreciable,False,1.0
+throughput,WM + Transformer + planificación,Actuado,10,-104.19999999999982,0.001953125,-0.16,pequeño,False,0.017578125
+throughput,WM + Transformer + planificación,Max-Pressure,10,-79.69999999999982,0.009765625,-0.14,despreciable,False,0.05859375
+throughput,WM + Transformer + planificación,PPO directo,10,-72.73333333333358,0.005859375,-0.12,despreciable,False,0.046875
+throughput,WM + Transformer + planificación,WM + LSTM,10,53.399999999999864,0.01953125,0.1,despreciable,True,0.078125
+throughput,WM + Transformer + planificación,WM + TSMixer,10,15.100000000000364,0.431640625,0.04,despreciable,True,1.0
+throughput,WM + Transformer + planificación,WM + Transformer,10,-0.5,0.76953125,-0.02,despreciable,False,1.0
+throughput,WM + Transformer + planificación,WM + LSTM + planificación,10,-86.19999999999982,0.005859375,-0.14,despreciable,False,0.046875
+throughput,WM + Transformer + planificación,WM + TSMixer + planificación,10,-86.5,0.009765625,-0.12,despreciable,False,0.05859375
+throughput,PPO directo,Tiempo fijo,10,35.333333333333485,0.001953125,0.12,despreciable,True,0.001953125
+co2_g_per_veh,WM + LSTM,Tiempo fijo,10,42.84041479576689,0.625,0.2,pequeño,False,1.0
+co2_g_per_veh,WM + LSTM,Actuado,10,166.59322721626373,0.001953125,1.0,grande,False,0.017578125
+co2_g_per_veh,WM + LSTM,Max-Pressure,10,57.337887742903916,0.001953125,0.58,grande,False,0.017578125
+co2_g_per_veh,WM + LSTM,PPO directo,10,94.43963787473695,0.009765625,0.5,grande,False,0.05859375
+co2_g_per_veh,WM + LSTM,WM + TSMixer,10,17.9036974325316,0.556640625,0.08,despreciable,False,1.0
+co2_g_per_veh,WM + LSTM,WM + Transformer,10,20.986860826791542,0.130859375,0.14,despreciable,False,0.5234375
+co2_g_per_veh,WM + LSTM,WM + LSTM + planificación,10,60.898288432941655,0.001953125,0.6,grande,False,0.017578125
+co2_g_per_veh,WM + LSTM,WM + TSMixer + planificación,10,42.67247459095728,0.013671875,0.36,mediano,False,0.068359375
+co2_g_per_veh,WM + LSTM,WM + Transformer + planificación,10,28.701066574815627,0.130859375,0.18,pequeño,False,0.5234375
+co2_g_per_veh,WM + TSMixer,Tiempo fijo,10,-6.935744857128043,0.625,-0.04,despreciable,True,1.0
+co2_g_per_veh,WM + TSMixer,Actuado,10,159.92967349279425,0.001953125,0.92,grande,False,0.017578125
+co2_g_per_veh,WM + TSMixer,Max-Pressure,10,52.48968002052138,0.083984375,0.22,pequeño,False,0.587890625
+co2_g_per_veh,WM + TSMixer,PPO directo,10,56.29728303469602,0.001953125,0.32,pequeño,False,0.017578125
+co2_g_per_veh,WM + TSMixer,WM + LSTM,10,-17.9036974325316,0.556640625,-0.08,despreciable,True,1.0
+co2_g_per_veh,WM + TSMixer,WM + Transformer,10,1.1649883895921676,0.921875,0.02,despreciable,False,1.0
+co2_g_per_veh,WM + TSMixer,WM + LSTM + planificación,10,47.00835701306403,0.10546875,0.24,pequeño,False,0.6328125
+co2_g_per_veh,WM + TSMixer,WM + TSMixer + planificación,10,23.330690246068798,0.193359375,0.12,despreciable,False,0.966796875
+co2_g_per_veh,WM + TSMixer,WM + Transformer + planificación,10,-7.397392045606864,1.0,0.0,despreciable,True,1.0
+co2_g_per_veh,WM + Transformer,Tiempo fijo,10,5.0429109593764,0.921875,0.02,despreciable,False,1.0
+co2_g_per_veh,WM + Transformer,Actuado,10,156.8465100985343,0.001953125,0.96,grande,False,0.017578125
+co2_g_per_veh,WM + Transformer,Max-Pressure,10,49.406516626261435,0.009765625,0.24,pequeño,False,0.078125
+co2_g_per_veh,WM + Transformer,PPO directo,10,61.78296773231389,0.009765625,0.36,mediano,False,0.078125
+co2_g_per_veh,WM + Transformer,WM + LSTM,10,-20.986860826791542,0.130859375,-0.14,despreciable,True,0.52734375
+co2_g_per_veh,WM + Transformer,WM + TSMixer,10,-1.1649883895921676,0.921875,-0.02,despreciable,True,1.0
+co2_g_per_veh,WM + Transformer,WM + LSTM + planificación,10,41.07029829167067,0.013671875,0.28,pequeño,False,0.08203125
+co2_g_per_veh,WM + Transformer,WM + TSMixer + planificación,10,10.270460209290576,0.10546875,0.2,pequeño,False,0.52734375
+co2_g_per_veh,WM + Transformer,WM + Transformer + planificación,10,-0.855791550876944,1.0,0.02,despreciable,True,1.0
+co2_g_per_veh,WM + LSTM + planificación,Tiempo fijo,10,-11.416278880769681,0.232421875,-0.14,despreciable,True,0.697265625
+co2_g_per_veh,WM + LSTM + planificación,Actuado,10,105.780827106722,0.001953125,0.98,grande,False,0.017578125
+co2_g_per_veh,WM + LSTM + planificación,Max-Pressure,10,-0.3870610486935391,0.921875,0.02,despreciable,True,0.984375
+co2_g_per_veh,WM + LSTM + planificación,PPO directo,10,42.193723540922406,0.4921875,0.28,pequeño,False,0.984375
+co2_g_per_veh,WM + LSTM + planificación,WM + LSTM,10,-60.898288432941655,0.001953125,-0.6,grande,True,0.017578125
+co2_g_per_veh,WM + LSTM + planificación,WM + TSMixer,10,-47.00835701306403,0.10546875,-0.24,pequeño,True,0.421875
+co2_g_per_veh,WM + LSTM + planificación,WM + Transformer,10,-41.07029829167067,0.013671875,-0.28,pequeño,True,0.068359375
+co2_g_per_veh,WM + LSTM + planificación,WM + TSMixer + planificación,10,-12.62388665441648,0.009765625,-0.22,pequeño,True,0.068359375
+co2_g_per_veh,WM + LSTM + planificación,WM + Transformer + planificación,10,-37.6702113268492,0.009765625,-0.34,mediano,True,0.068359375
+co2_g_per_veh,WM + TSMixer + planificación,Tiempo fijo,10,-4.106777192155079,0.275390625,-0.04,despreciable,True,0.38671875
+co2_g_per_veh,WM + TSMixer + planificación,Actuado,10,118.86966572322243,0.001953125,0.94,grande,False,0.017578125
+co2_g_per_veh,WM + TSMixer + planificación,Max-Pressure,10,15.437705805160931,0.01953125,0.22,pequeño,False,0.09765625
+co2_g_per_veh,WM + TSMixer + planificación,PPO directo,10,47.49244588681498,0.013671875,0.36,mediano,False,0.095703125
+co2_g_per_veh,WM + TSMixer + planificación,WM + LSTM,10,-42.67247459095728,0.013671875,-0.36,mediano,True,0.095703125
+co2_g_per_veh,WM + TSMixer + planificación,WM + TSMixer,10,-23.330690246068798,0.193359375,-0.12,despreciable,True,0.38671875
+co2_g_per_veh,WM + TSMixer + planificación,WM + Transformer,10,-10.270460209290576,0.10546875,-0.2,pequeño,True,0.31640625
+co2_g_per_veh,WM + TSMixer + planificación,WM + LSTM + planificación,10,12.62388665441648,0.009765625,0.22,pequeño,False,0.078125
+co2_g_per_veh,WM + TSMixer + planificación,WM + Transformer + planificación,10,-9.24477654650147,0.048828125,-0.18,pequeño,True,0.1953125
+co2_g_per_veh,WM + Transformer + planificación,Tiempo fijo,10,4.745034713442664,0.921875,0.08,despreciable,False,1.0
+co2_g_per_veh,WM + Transformer + planificación,Actuado,10,139.41884295849468,0.001953125,0.94,grande,False,0.017578125
+co2_g_per_veh,WM + Transformer + planificación,Max-Pressure,10,36.09197846008638,0.009765625,0.34,mediano,False,0.078125
+co2_g_per_veh,WM + Transformer + planificación,PPO directo,10,47.42540947165642,0.009765625,0.42,mediano,False,0.078125
+co2_g_per_veh,WM + Transformer + planificación,WM + LSTM,10,-28.701066574815627,0.130859375,-0.18,pequeño,True,0.5234375
+co2_g_per_veh,WM + Transformer + planificación,WM + TSMixer,10,7.397392045606864,1.0,0.0,despreciable,False,1.0
+co2_g_per_veh,WM + Transformer + planificación,WM + Transformer,10,0.855791550876944,1.0,-0.02,despreciable,False,1.0
+co2_g_per_veh,WM + Transformer + planificación,WM + LSTM + planificación,10,37.6702113268492,0.009765625,0.34,mediano,False,0.078125
+co2_g_per_veh,WM + Transformer + planificación,WM + TSMixer + planificación,10,9.24477654650147,0.048828125,0.18,pequeño,False,0.244140625
+co2_g_per_veh,PPO directo,Tiempo fijo,10,-50.5067306614275,0.001953125,-0.38,mediano,True,0.001953125

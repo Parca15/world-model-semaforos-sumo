@@ -1,0 +1,11 @@
+{
+ "sumo_steps_world_model": 57600,
+ "sumo_steps_ppo_direct": 57600,
+ "dream_steps_ppo": 400000,
+ "ppo_direct_steps_to_90pct": [
+  14400,
+  57600,
+  30240
+ ],
+ "ppo_direct_steps_to_90pct_mean": 34080.0
+}
