@@ -1,0 +1,32 @@
+{
+ "representacion": "crudo",
+ "criterio": "RMSE a h=20 por episodio de validación; Wilcoxon pareado + Holm, α=0,05",
+ "pruebas": [
+  {
+   "referencia": "crudo",
+   "contra": "AE",
+   "n": 16,
+   "mediana_dif": -0.04835538566112518,
+   "p": 0.0155029296875,
+   "cliffs_delta": -0.171875,
+   "efecto": "pequeño",
+   "referencia_mejor": true,
+   "p_holm": 0.0155029296875
+  },
+  {
+   "referencia": "crudo",
+   "contra": "VAE",
+   "n": 16,
+   "mediana_dif": -0.18852010369300842,
+   "p": 6.103515625e-05,
+   "cliffs_delta": -0.5859375,
+   "efecto": "grande",
+   "referencia_mejor": true,
+   "p_holm": 0.0001220703125
+  }
+ ],
+ "mejor_ae": {
+  "AE": "C:\\Users\\neide\\Desktop\\world-model-semaforos-sumo\\runs\\exp0\\ae32.pt",
+  "VAE": "C:\\Users\\neide\\Desktop\\world-model-semaforos-sumo\\runs\\exp0\\vae32.pt"
+ }
+}
