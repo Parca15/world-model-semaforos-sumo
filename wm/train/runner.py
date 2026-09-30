@@ -1,8 +1,9 @@
-"""Ejecuta entrenamientos de TSMixer en paralelo (1 proceso y 1 hilo de torch por entrenamiento).
+"""Ejecuta entrenamientos de modelos temporales en paralelo (1 proceso y 1 hilo de torch por entrenamiento).
 
 Un trabajo es un dict:
     name         identificador (carpeta en runs/)
-    arch         hiperparámetros de arquitectura (n_blocks, d_model, dropout, norm)
+    model        (opcional) lstm | tsmixer | transformer; por defecto tsmixer
+    arch         hiperparámetros de arquitectura del modelo (p. ej. n_blocks, d_model, dropout, norm)
     lr, weight_decay, seed, max_epochs
     out_dir      carpeta donde se guardan model.pt, log.jsonl y fit.json
     ae_path      (opcional) checkpoint de AE/VAE: el modelo trabaja en el espacio latente
@@ -21,7 +22,8 @@ import torch
 
 from wm.data.base import FlatWindows
 from wm.experiments.common import flat, load_json, save_checkpoint, save_json, train_config
-from wm.models.tsmixer import build_tsmixer, count_params
+from wm.models.temporal import build_temporal
+from wm.models.tsmixer import count_params
 from wm.train.trainer import fit
 from wm.utils import load_config, max_workers, set_seed, threads_per_worker
 
@@ -62,18 +64,19 @@ def run_job(job: dict) -> dict:
         ae = torch.load(job["ae_path"], map_location="cpu")["model"].eval()
         train, val = latent_flat(train, ae, state_dim), latent_flat(val, ae, state_dim)
     budget = load_config("models")["param_budget"]["target"]
-    model = build_tsmixer(budget, input_dim=train.rows.shape[1], state_dim=train.delta.shape[1], n_tls=n_tls,
-                          window=train.W, **job["arch"])
+    kind = job.get("model", "tsmixer")
+    model = build_temporal(kind, budget, input_dim=train.rows.shape[1], state_dim=train.delta.shape[1],
+                           n_tls=n_tls, window=train.W, **job["arch"])
     tcfg = train_config(lr=job["lr"], weight_decay=job["weight_decay"], seed=job["seed"],
                         max_epochs=job["max_epochs"], threads=threads)
     t0 = time.time()
     key = _job_key(job)
     model, res = fit(model, train, val, tcfg, out / "log.jsonl", state_path=out / "train_state.pt", state_tag=key)
-    summary = {"name": job["name"], "arch": job["arch"], "ff_dim": model.cfg.ff_dim, "lr": job["lr"],
-               "weight_decay": job["weight_decay"], "seed": job["seed"], "params": count_params(model),
+    summary = {"name": job["name"], "model": kind, "arch": job["arch"], "model_config": model.cfg.to_dict(),
+               "lr": job["lr"], "weight_decay": job["weight_decay"], "seed": job["seed"], "params": count_params(model),
                "ae_path": job.get("ae_path"), **{k: v for k, v in res.to_dict().items() if k != "history"},
                "wall_seconds": time.time() - t0, "threads": threads, "job_key": key}
-    save_checkpoint(model, "tsmixer", model.cfg.to_dict(), out / "model.pt", {"fit": summary})
+    save_checkpoint(model, kind, model.cfg.to_dict(), out / "model.pt", {"fit": summary})
     save_json(summary, out / "fit.json")
     (out / "train_state.pt").unlink(missing_ok=True)
     print(f"  [{job['name']}] params={summary['params']} val={res.best_val_loss:.4f} "

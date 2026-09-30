@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STAGES = {
     4: "wm.experiments.stage4_baselines",
     5: "wm.experiments.stage5_representation",
-    6: "wm.experiments.stage6_tsmixer",
+    6: "wm.experiments.stage6_temporal",
     7: "wm.experiments.stage7_dream_ppo",
     8: "wm.experiments.stage8_sumo_ppo",
     9: "wm.experiments.stage9_evaluation",

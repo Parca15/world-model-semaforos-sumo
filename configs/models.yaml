@@ -1,4 +1,4 @@
-# Etapas 4-6 — modelos predictivos. Interfaz común: entrada [B, W, 91+7] -> Δŝ_{t+1} [B, 91], r̂_t [B, 7].
+# Etapas 4-6 — modelos predictivos (baselines y los tres modelos temporales). Interfaz común: entrada [B, W, 91+7] -> Δŝ_{t+1} [B, 91], r̂_t [B, 7].
 
 param_budget:
   target: 150000        # parámetros entrenables objetivo (±10 %)
@@ -13,6 +13,25 @@ tsmixer:
     d_model: [64, 96, 128]
     dropout: [0.0, 0.1, 0.2]
     norm: [layer, batch]
+    lr: [0.0003, 0.001, 0.003]
+    weight_decay: [0.0, 0.0001, 0.001]
+
+# Mismo presupuesto de ajuste para los tres modelos temporales: 12 configuraciones de su espacio (train.yaml).
+# La dimensión libre de cada uno (hidden de la LSTM, ff_dim del Transformer) se calcula para el presupuesto;
+# las configuraciones que no pueden quedar dentro de ±10 % se descartan al muestrear.
+lstm:
+  search_space:
+    n_layers: [2]                 # plan: 2 capas LSTM -> capa densa
+    dropout: [0.0, 0.1, 0.2, 0.3]
+    lr: [0.0003, 0.001, 0.003]
+    weight_decay: [0.0, 0.0001, 0.001]
+
+transformer:
+  search_space:
+    n_layers: [1, 2, 3, 4]
+    d_model: [32, 64, 96]
+    n_heads: [2, 4]
+    dropout: [0.0, 0.1, 0.2]
     lr: [0.0003, 0.001, 0.003]
     weight_decay: [0.0, 0.0001, 0.001]
 

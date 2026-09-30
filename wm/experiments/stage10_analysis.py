@@ -5,7 +5,7 @@
 Lee los resultados de las Etapas 4-9 y produce:
   results/stage10_control_tests.csv     Wilcoxon pareado por escenario + Holm + Cliff's delta
   results/stage10_sample_efficiency.json
-  results/tables/*.md                   tablas en Markdown para RESULTADOS_TSMIXER.md
+  results/tables/*.md                   tablas en Markdown para el reporte
   results/figures/*.png                 figuras
 """
 from __future__ import annotations
@@ -21,16 +21,20 @@ import pandas as pd  # noqa: E402
 
 from wm.eval.stats import paired_comparisons  # noqa: E402
 from wm.experiments.common import load_json, results_path, run_dir, save_json  # noqa: E402
-from wm.experiments.stage9_evaluation import LEARNED, REFERENCE  # noqa: E402
+from wm.experiments.stage9_evaluation import DREAM, LEARNED, PLANNING, REFERENCE  # noqa: E402
+from wm.models.temporal import TEMPORAL_MODELS  # noqa: E402
 from wm.utils import DATA_DIR, RESULTS_DIR, load_config  # noqa: E402
 
 # Paleta categórica validada (orden fijo; el color sigue a la entidad, nunca a su posición)
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 CONDITIONS = list(REFERENCE + LEARNED)
-COND_COLOR = dict(zip(CONDITIONS, PALETTE))
 MODEL_COLOR = {"TSMixer": PALETTE[0], "Ridge": PALETTE[1], "MLP": PALETTE[2], "Media móvil": PALETTE[3],
-               "Persistencia": PALETTE[4]}
+               "Persistencia": PALETTE[4], "LSTM": PALETTE[5], "Transformer": PALETTE[6]}
+# cada World Model conserva su color; su variante con planificación se dibuja con el mismo color y rayado
+COND_COLOR = {"Tiempo fijo": PALETTE[3], "Actuado": PALETTE[4], "Max-Pressure": PALETTE[7],
+              "PPO directo": PALETTE[1],
+              **{c: MODEL_COLOR[TEMPORAL_MODELS[k].label] for c, k in {**DREAM, **PLANNING}.items()}}
 FIG = RESULTS_DIR / "figures"
 TABLES = RESULTS_DIR / "tables"
 
@@ -63,43 +67,61 @@ def md(df: pd.DataFrame, name: str, floatfmt: str = ".3f") -> str:
 
 
 # ------------------------------------------------------------ predicción
+def stage6(kind: str, name: str):
+    return results_path(f"stage6/{kind}/{name}")
+
+
 def prediction_tables() -> None:
     b4 = pd.read_csv(results_path("stage4_baselines.csv"))
-    f6 = pd.read_csv(results_path("stage6_final_seeds.csv"))
+    f6 = {k: pd.read_csv(stage6(k, "final_seeds.csv")) for k in TEMPORAL_MODELS}
+    seeds = load_config("train")["final_seeds"]
     cols = ["rmse_1", "rmse_5", "rmse_20", "auc_rmse", "crecimiento", "reward_rmse_1", "phase_acc_1",
             "phase_acc_20", "rmse_1_congestion"]
     for split in ("test", "test_ood"):
-        ts = f6[f6.conjunto == split][cols]
-        row = {"modelo": "TSMixer (media ± desv., 5 semillas)"}
-        row.update({c: f"{ts[c].mean():.3f} ± {ts[c].std():.3f}" for c in cols})
-        base = b4[b4.conjunto == split]
-        rows = [row] + [{"modelo": r.modelo, **{c: f"{getattr(r, c):.3f}" for c in cols}} for r in base.itertuples()]
-        pers = base.set_index("modelo").loc["Persistencia"]
-        for r in rows:
-            name = "TSMixer" if r["modelo"].startswith("TSMixer") else r["modelo"]
-            v1 = ts.rmse_1.mean() if name == "TSMixer" else base.set_index("modelo").loc[name, "rmse_1"]
-            v20 = ts.rmse_20.mean() if name == "TSMixer" else base.set_index("modelo").loc[name, "rmse_20"]
-            r["skill_1"] = f"{1 - v1 / pers.rmse_1:+.3f}"
-            r["skill_20"] = f"{1 - v20 / pers.rmse_20:+.3f}"
+        base = b4[b4.conjunto == split].set_index("modelo")
+        pers = base.loc["Persistencia"]
+        rows = []
+        for k, f in f6.items():
+            ts = f[f.conjunto == split]
+            rows.append({"modelo": f"{TEMPORAL_MODELS[k].label} (media ± desv., {len(seeds)} semillas)",
+                         **{c: f"{ts[c].mean():.3f} ± {ts[c].std():.3f}" for c in cols},
+                         "skill_1": f"{1 - ts.rmse_1.mean() / pers.rmse_1:+.3f}",
+                         "skill_20": f"{1 - ts.rmse_20.mean() / pers.rmse_20:+.3f}"})
+        for name, r in base.iterrows():
+            rows.append({"modelo": name, **{c: f"{r[c]:.3f}" for c in cols},
+                         "skill_1": f"{1 - r.rmse_1 / pers.rmse_1:+.3f}",
+                         "skill_20": f"{1 - r.rmse_20 / pers.rmse_20:+.3f}"})
         md(pd.DataFrame(rows), f"prediccion_{split}")
 
-    # por variable (1 paso, test, unidades originales) — TSMixer semilla 0 vs Ridge
-    ts0 = load_json(results_path("stage6/seed0.json"))["metrics"]["test"]["per_variable"]
+    # por variable (1 paso, test, unidades originales) — semilla 0 de cada modelo temporal vs Ridge
+    per_var = {k: load_json(stage6(k, "seed0.json"))["metrics"]["test"]["per_variable"] for k in TEMPORAL_MODELS}
     rd = load_json(results_path("stage4/ridge.json"))["metrics"]["test"]["per_variable"]
-    per_var = pd.DataFrame([{"variable": a["variable"], "MAE TSMixer": a["mae"], "MAE Ridge": b["mae"],
-                             "RMSE TSMixer": a["rmse"], "RMSE Ridge": b["rmse"], "R² TSMixer": a["r2"],
-                             "R² Ridge": b["r2"], "sMAPE % TSMixer": a["smape_pct"]} for a, b in zip(ts0, rd)])
-    md(per_var, "prediccion_por_variable")
-
-    # pruebas TSMixer vs baselines
-    s6 = load_json(results_path("stage6_summary.json"))
     rows = []
-    for key, label in (("rmse_1", "1 paso"), ("rmse_H", "20 pasos")):
-        for c in s6["comparisons_test"][key]:
-            rows.append({"horizonte": label, "TSMixer vs": c["contra"], "mediana dif. RMSE": c["mediana_dif"],
-                         "p (Holm)": c["p_holm"], "Cliff δ": c["cliffs_delta"], "efecto": c["efecto"],
-                         "TSMixer mejor": "sí" if c["referencia_mejor"] else "no"})
+    for i, r in enumerate(rd):
+        row = {"variable": r["variable"]}
+        for metric, label in (("mae", "MAE"), ("rmse", "RMSE"), ("r2", "R²")):
+            row.update({f"{label} {TEMPORAL_MODELS[k].label}": v[i][metric] for k, v in per_var.items()})
+            row[f"{label} Ridge"] = r[metric]
+        rows.append(row)
+    md(pd.DataFrame(rows), "prediccion_por_variable")
+
+    # pruebas de cada modelo temporal contra los baselines y entre sí
+    rows = []
+    for k in TEMPORAL_MODELS:
+        s6 = load_json(stage6(k, "summary.json"))
+        for key, label in (("rmse_1", "1 paso"), ("rmse_H", "20 pasos")):
+            rows += [{"horizonte": label, "modelo": s6["label"], "contra": c["contra"],
+                      "mediana dif. RMSE": c["mediana_dif"], "p (Holm)": c["p_holm"], "Cliff δ": c["cliffs_delta"],
+                      "efecto": c["efecto"], "modelo mejor": "sí" if c["referencia_mejor"] else "no"}
+                     for c in s6["comparisons_test"][key]]
     md(pd.DataFrame(rows), "prediccion_pruebas", floatfmt=".4g")
+    tests = load_json(results_path("stage6_model_tests.json"))
+    rows = [{"horizonte": label, "modelo": ref, "contra": c["contra"], "mediana dif. RMSE": c["mediana_dif"],
+             "p (Holm)": c["p_holm"], "Cliff δ": c["cliffs_delta"], "efecto": c["efecto"],
+             "modelo mejor": "sí" if c["referencia_mejor"] else "no"}
+            for key, label in (("rmse_1", "1 paso"), ("rmse_H", "20 pasos"))
+            for ref, comp in tests[key].items() for c in comp if ref < c["contra"]]
+    md(pd.DataFrame(rows), "prediccion_pruebas_entre_modelos", floatfmt=".4g")
 
     # figura RMSE(h)
     fig, ax = plt.subplots(figsize=(7.5, 4.2))
@@ -107,32 +129,29 @@ def prediction_tables() -> None:
     for name, fname in (("Persistencia", "persistencia"), ("Media móvil", "media_móvil"), ("MLP", "mlp"),
                         ("Ridge", "ridge")):
         y = load_json(results_path(f"stage4/{fname}.json"))["metrics"]["test"]["rmse_h"]
-        ax.plot(H, y, color=MODEL_COLOR[name], lw=2, label=name)
-        ax.annotate(name, (20, y[-1]), xytext=(4, 0), textcoords="offset points", color=INK2, fontsize=8,
-                    va="center")
-    curves = np.array([load_json(results_path(f"stage6/seed{s}.json"))["metrics"]["test"]["rmse_h"]
-                       for s in load_config("train")["final_seeds"]])
-    m, sd = curves.mean(0), curves.std(0)
-    ax.fill_between(H, m - sd, m + sd, color=MODEL_COLOR["TSMixer"], alpha=0.18, lw=0)
-    ax.plot(H, m, color=MODEL_COLOR["TSMixer"], lw=2, label="TSMixer (5 semillas)")
-    ax.annotate("TSMixer", (20, m[-1]), xytext=(4, 0), textcoords="offset points", color=INK, fontsize=8,
-                va="center", weight="bold")
+        ax.plot(H, y, color=MODEL_COLOR[name], lw=1.5, ls="--", label=name)
+    for k, m in TEMPORAL_MODELS.items():
+        curves = np.array([load_json(stage6(k, f"seed{s}.json"))["metrics"]["test"]["rmse_h"] for s in seeds])
+        mean, sd = curves.mean(0), curves.std(0)
+        ax.fill_between(H, mean - sd, mean + sd, color=MODEL_COLOR[m.label], alpha=0.18, lw=0)
+        ax.plot(H, mean, color=MODEL_COLOR[m.label], lw=2.2, label=f"{m.label} ({len(seeds)} semillas)")
     style(ax, "Error autorregresivo en test según el horizonte", "horizonte h (pasos de 5 s)",
           "RMSE (estado normalizado)")
     ax.set_xticks([1, 3, 5, 10, 15, 20])
-    ax.legend(frameon=False, fontsize=8, loc="upper left")
+    ax.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
     save(fig, "rmse_vs_horizonte.png")
 
-    # curvas de entrenamiento
-    fig, ax = plt.subplots(figsize=(7, 3.8))
-    for s in load_config("train")["final_seeds"]:
-        log = pd.read_json(run_dir("tsmixer", "final", f"seed{s}") / "log.jsonl", lines=True)
-        ax.plot(log.epoch, log.val_loss, color=PALETTE[0], alpha=0.35 + 0.13 * s, lw=1.5,
-                label=f"semilla {s}")
-    style(ax, "TSMixer: pérdida de validación por época (5 semillas)", "época (11 040 ventanas)",
-          "MSE(Δs) + MSE(r) en validación")
-    ax.legend(frameon=False, fontsize=8, ncol=5)
-    save(fig, "tsmixer_entrenamiento.png")
+    # curvas de entrenamiento: un panel por modelo, misma escala
+    fig, axes = plt.subplots(1, len(TEMPORAL_MODELS), figsize=(12, 3.6), sharey=True)
+    for ax, (k, m) in zip(axes, TEMPORAL_MODELS.items()):
+        for s in seeds:
+            log = pd.read_json(run_dir(k, "final", f"seed{s}") / "log.jsonl", lines=True)
+            ax.plot(log.epoch, log.val_loss, color=MODEL_COLOR[m.label], alpha=0.35 + 0.13 * s, lw=1.5,
+                    label=f"semilla {s}")
+        style(ax, f"{m.label}: pérdida de validación", "época (11 040 ventanas)",
+              "pérdida de validación" if ax is axes[0] else "")
+    axes[0].legend(frameon=False, fontsize=7, ncol=2)
+    save(fig, "entrenamiento_modelos_temporales.png")
 
 
 # ------------------------------------------------------------ control
@@ -163,7 +182,7 @@ def control_analysis() -> None:
     for metric, lower in (("waiting_time_s", True), ("travel_time_s", True), ("queue_mean_m", True),
                           ("throughput", False), ("co2_g_per_veh", True)):
         piv = per_scen.pivot_table(index=["demand", "seed"], columns="condition", values=metric)
-        for ref in ("WM + TSMixer", "WM + TSMixer + planificación"):
+        for ref in (*DREAM, *PLANNING):
             for row in paired_comparisons(ref, {c: piv[c].values for c in CONDITIONS}, lower_is_better=lower):
                 tests.append({"métrica": metric, **row})
         for row in paired_comparisons("PPO directo", {c: piv[c].values for c in ("PPO directo", "Tiempo fijo")},
@@ -176,17 +195,18 @@ def control_analysis() -> None:
              "referencia_mejor"]], "control_pruebas", floatfmt=".4g")
 
     # figura: espera por demanda
-    fig, ax = plt.subplots(figsize=(9, 4.2))
+    fig, ax = plt.subplots(figsize=(11, 4.4))
     demands = list(by_dem.index)
     width = 0.8 / len(CONDITIONS)
     for i, c in enumerate(CONDITIONS):
         if c not in by_dem:
             continue
         x = np.arange(len(demands)) + (i - (len(CONDITIONS) - 1) / 2) * width
-        ax.bar(x, by_dem[c].values, width=width * 0.92, color=COND_COLOR[c], label=c)
+        ax.bar(x, by_dem[c].values, width=width * 0.92, color=COND_COLOR[c], label=c,
+               hatch="///" if c in PLANNING else None, edgecolor="white", lw=0)
     ax.set_xticks(np.arange(len(demands)), [f"{d}{' (OOD)' if d == 'D5' else ''}" for d in demands])
     style(ax, "Tiempo de espera medio por vehículo en SUMO (escenarios de evaluación)", "demanda", "espera (s)")
-    ax.legend(frameon=False, fontsize=8, ncol=3, loc="upper left")
+    ax.legend(frameon=False, fontsize=8, ncol=4, loc="upper left")
     save(fig, "control_espera_por_demanda.png")
 
 
@@ -223,11 +243,14 @@ def sample_efficiency() -> None:
     style(axes[0], "PPO directo: aprendizaje frente a pasos de SUMO", "pasos de SUMO consumidos",
           "retorno por episodio (media móvil 5)")
     axes[0].legend(frameon=False, fontsize=7, ncol=2)
-    for s in seeds:
-        c = pd.read_csv(run_dir("ppo_dream", f"seed{s}") / "curve.csv")
-        axes[1].plot(c.timesteps, c.dream_return_mean, color=COND_COLOR["WM + TSMixer"], alpha=0.35 + 0.13 * s,
-                     lw=1.5, label=f"semilla {s}")
-    style(axes[1], "PPO en el sueño (TSMixer): 0 pasos de SUMO", "pasos imaginados",
+    for k, m in TEMPORAL_MODELS.items():
+        c = pd.concat([pd.read_csv(run_dir("ppo_dream", k, f"seed{s}") / "curve.csv") for s in seeds])
+        g = c.groupby("timesteps").dream_return_mean
+        mean, sd = g.mean(), g.std().fillna(0)
+        axes[1].fill_between(mean.index, mean - sd, mean + sd, color=MODEL_COLOR[m.label], alpha=0.18, lw=0)
+        axes[1].plot(mean.index, mean.values, color=MODEL_COLOR[m.label], lw=1.8,
+                     label=f"WM + {m.label} ({len(seeds)} semillas)")
+    style(axes[1], "PPO en el sueño de cada World Model: 0 pasos de SUMO", "pasos imaginados",
           "retorno imaginado (episodios de 40 pasos)")
     axes[1].legend(frameon=False, fontsize=7, ncol=2)
     save(fig, "curvas_ppo.png")
@@ -235,13 +258,16 @@ def sample_efficiency() -> None:
 
 def fidelity_figure() -> None:
     fid = load_json(results_path("stage9_fidelity.json"))
-    rows = [{"semilla": k, **v} for k, v in fid["logged"].items()]
-    md(pd.DataFrame(rows)[["semilla", "pearson", "spearman", "gap_mean", "gap_mae", "real_mean",
+    rows = [{"modelo": fid[k]["label"], "semilla": seed, **v} for k in TEMPORAL_MODELS
+            for seed, v in fid[k]["logged"].items()]
+    md(pd.DataFrame(rows)[["modelo", "semilla", "pearson", "spearman", "gap_mean", "gap_mae", "real_mean",
                            "imagined_mean"]], "fidelidad_registrada")
-    r = fid["ranking"]
-    md(pd.DataFrame([{"estados": r["states"], "candidatas": r["candidates"], "horizonte": r["horizon"],
-                      "Kendall τ medio": r["tau_mean"], "fracción de estados con τ > 0": r["frac_states_tau_positive"],
-                      "acierto top-1 (semilla 0)": r["top1_agreement_seed0"]}]), "fidelidad_ranking")
+    setup = fid["ranking_setup"]
+    md(pd.DataFrame([{"modelo": fid[k]["label"], "estados": setup["states"], "candidatas": setup["candidates"],
+                      "horizonte": setup["horizon"], "Kendall τ medio": fid[k]["ranking"]["tau_mean"],
+                      "fracción de estados con τ > 0": fid[k]["ranking"]["frac_states_tau_positive"],
+                      "acierto top-1 (media semillas)": fid[k]["ranking"]["top1_agreement_mean"]}
+                     for k in TEMPORAL_MODELS]), "fidelidad_ranking")
 
 
 def main() -> int:

@@ -16,7 +16,7 @@ hyperparams:
 observation: normalized_state   # s_t normalizado con norm_stats del dataset base, aplanado (91)
 reward_scale: 10.0              # r_PPO = Σ_i r_t^i / reward_scale (igual en ambos entornos)
 rollouts_per_checkpoint: 4      # punto de control cada 4 actualizaciones (8192 pasos)
-seeds: [0, 1, 2, 3, 4]          # políticas en el sueño (una por semilla del TSMixer)
+seeds: [0, 1, 2, 3, 4]          # políticas en el sueño (una por semilla de cada modelo temporal)
 
 dream:
   n_envs: 16                    # entornos imaginados en lote (una sola pasada del modelo)

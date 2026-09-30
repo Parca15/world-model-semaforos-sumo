@@ -28,7 +28,7 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 3 | Dataset base (`base_v2`) | ✅ |
 | 4 | Baselines | ✅ |
 | 5 | Experimento 0 (AE/VAE) | ✅ (decisión: estado crudo) |
-| 6 | Modelo temporal (TSMixer) | ⏳ |
+| 6 | Modelos temporales (LSTM, TSMixer, Transformer) | ⏳ |
 | 7 | Dream Environment + PPO | — |
 | 8 | PPO directo en SUMO | — |
 | 9 | Evaluación final | — |

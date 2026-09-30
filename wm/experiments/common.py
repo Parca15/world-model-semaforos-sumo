@@ -11,8 +11,10 @@ from torch import nn
 
 from wm.data.base import FlatWindows, WindowDataset, load_base
 from wm.eval.rollout import HorizonArrays, horizon_arrays
+from wm.models.ae import LatentPredictor
 from wm.models.baselines import WindowMLP
-from wm.models.tsmixer import TSMixer, TSMixerConfig
+from wm.models.predictor import TorchPredictor
+from wm.models.temporal import TEMPORAL_MODELS, from_config
 from wm.train.trainer import TrainConfig
 from wm.utils import RESULTS_DIR, RUNS_DIR, load_config
 
@@ -85,14 +87,38 @@ def save_checkpoint(model: nn.Module, kind: str, config: dict, path: Path, extra
 
 def load_checkpoint(path: Path) -> nn.Module:
     ck = torch.load(path, map_location="cpu")
-    if ck["kind"] == "tsmixer":
-        model = TSMixer(TSMixerConfig(**ck["config"]))
+    if ck["kind"] in TEMPORAL_MODELS:
+        model = from_config(ck["kind"], ck["config"])
     elif ck["kind"] == "mlp":
         model = WindowMLP(**ck["config"])
     else:
         raise ValueError(f"Tipo de checkpoint desconocido: {ck['kind']}")
     model.load_state_dict(ck["state_dict"])
     return model.eval()
+
+
+# ------------------------------------------------------------ World Models de la Etapa 6
+def representation() -> str | None:
+    """Checkpoint de AE/VAE si el Experimento 0 decidió usar z; None para el estado crudo."""
+    path = results_path("stage5_decision.json")
+    if not path.exists():
+        return None
+    d = load_json(path)
+    return None if d["representacion"] == "crudo" else d["mejor_ae"][d["representacion"]]
+
+
+def make_predictor(ckpt: Path, ae_path: str | None, name: str):
+    ds = dataset("train")
+    model = load_checkpoint(ckpt)
+    if ae_path:
+        return LatentPredictor(torch.load(ae_path, map_location="cpu")["model"], model, name, ds.state_dim, ds.n_tls)
+    return TorchPredictor(model, name, ds.state_dim)
+
+
+def world_model(kind: str, seed: int):
+    """Predictor del World Model `kind` (lstm | tsmixer | transformer) entrenado con la semilla final `seed`."""
+    return make_predictor(run_dir(kind, "final", f"seed{seed}") / "model.pt", representation(),
+                          TEMPORAL_MODELS[kind].label)
 
 
 # ------------------------------------------------------------ evaluación

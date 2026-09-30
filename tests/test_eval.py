@@ -129,3 +129,48 @@ def test_interrupted_training_resumes_to_the_same_result(tmp_path):
     # un estado de otro trabajo (tag distinto) se ignora
     _, res3 = train(2, state, tag="otro")
     assert res3.epochs_run == 2
+
+
+def test_lstm_and_transformer_shapes_and_budget():
+    from wm.models.temporal import build_temporal
+
+    for kind, arch in [("lstm", {"n_layers": 2, "dropout": 0.1}),
+                       ("transformer", {"n_layers": 2, "d_model": 64, "n_heads": 4}),
+                       ("transformer", {"n_layers": 4, "d_model": 32, "n_heads": 2})]:
+        m = build_temporal(kind, 150_000, **arch)
+        assert abs(count_params(m) - 150_000) / 150_000 < 0.10, (kind, arch, count_params(m))
+        m.eval()
+        delta, r = m(torch.randn(3, W, SD + NT))
+        assert delta.shape == (3, SD) and r.shape == (3, NT)
+
+
+def test_lstm_param_formula_matches_torch():
+    from wm.models.lstm import LSTMConfig, LSTMModel, lstm_params
+
+    for layers, hidden in [(1, 40), (2, 91), (3, 17)]:
+        cfg = LSTMConfig(n_layers=layers, hidden=hidden)
+        assert lstm_params(cfg) == count_params(LSTMModel(cfg))
+
+
+def test_lstm_and_transformer_use_the_whole_window():
+    from wm.models.temporal import build_temporal
+
+    torch.manual_seed(0)
+    for kind in ("lstm", "transformer"):
+        m = build_temporal(kind, 150_000).eval()
+        x = torch.randn(1, W, SD + NT)
+        x2 = x.clone()
+        x2[:, 0] += 1.0
+        assert not torch.allclose(m(x)[0], m(x2)[0]), kind
+
+
+def test_temporal_checkpoints_roundtrip(tmp_path):
+    from wm.experiments.common import load_checkpoint, save_checkpoint
+    from wm.models.temporal import TEMPORAL_MODELS, build_temporal
+
+    x = torch.randn(2, W, SD + NT)
+    for kind in TEMPORAL_MODELS:
+        m = build_temporal(kind, 150_000).eval()
+        save_checkpoint(m, kind, m.cfg.to_dict(), tmp_path / f"{kind}.pt")
+        m2 = load_checkpoint(tmp_path / f"{kind}.pt")
+        assert type(m2) is type(m) and torch.allclose(m(x)[0], m2(x)[0])
