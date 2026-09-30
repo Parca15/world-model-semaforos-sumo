@@ -31,8 +31,8 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 6 | Modelos temporales (LSTM, TSMixer, Transformer) | ✅ |
 | 7 | Dream Environment + PPO | ✅ (3 modelos × 5 semillas) |
 | 8 | PPO directo en SUMO | ✅ (3 semillas) |
-| 9 | Evaluación final | — |
-| 10 | Análisis y redacción | — |
+| 9 | Evaluación final | ✅ |
+| 10 | Análisis y redacción | ✅ análisis (tablas y figuras); redacción pendiente |
 
 ## Etapa 1 — escenario `urban7` (malla urbana irregular)
 
@@ -153,3 +153,31 @@ Baselines con λ = 1 (antes del cambio de pérdida; se recalculan con λ = 7/91 
   ambos superan al Transformer a 20 pasos (p_Holm < 0,001, δ de Cliff ≈ −0,45).
   Diagnóstico de la comparación TSMixer–Ridge (200 épocas y λ = 7/91 en la pérdida) en
   [`results/stage6_diagnostico.md`](results/stage6_diagnostico.md).
+
+## Etapas 7–10 — control en SUMO
+
+Espera media por vehículo (s) en los 10 escenarios de evaluación (D1–D5 × semillas 9, 10; D5 fuera de
+distribución). Las condiciones aprendidas promedian sus semillas de entrenamiento en cada escenario.
+Tabla completa con IC 95 % en `results/tables/control_resumen.md`; pruebas en `results/stage10_control_tests.csv`.
+
+| Condición | Espera (s) | Viaje (s) |
+|---|---|---|
+| Actuado | 48,0 | 156,6 |
+| PPO directo | 77,9 | 191,8 |
+| Max-Pressure | 82,6 | 196,2 |
+| WM + LSTM + planificación | 85,1 | 196,7 |
+| WM + TSMixer + planificación | 93,2 | 206,4 |
+| WM + Transformer | 96,2 | 212,0 |
+| WM + TSMixer | 96,6 | 214,4 |
+| WM + Transformer + planificación | 99,3 | 212,9 |
+| Tiempo fijo | 100,9 | 214,9 |
+| WM + LSTM | 103,9 | 219,7 |
+
+- PPO directo mejora al tiempo fijo de forma significativa (Wilcoxon + Holm, p = 0,002). Ninguna condición
+  WM difiere significativamente del tiempo fijo, ni los tres World Models entre sí; la planificación mejora
+  significativamente a WM + LSTM (p = 0,018, δ = −0,70). Con 10 escenarios el p mínimo alcanzable tras Holm
+  es ≈ 0,018, así que la potencia es limitada.
+- Fidelidad (retorno imaginado vs real, 40 pasos, test): Pearson LSTM 0,58, TSMixer 0,52, Transformer 0,48.
+  Ranking de acciones (Kendall τ, h = 5): 0,64 / 0,64 / 0,60.
+- Eficiencia muestral: los World Models usan 57 600 pasos de SUMO (el dataset) y PPO en el sueño 0 pasos
+  adicionales; PPO directo usa otros 57 600 pasos por semilla.
