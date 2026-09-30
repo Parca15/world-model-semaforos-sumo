@@ -32,7 +32,7 @@ aunque `SUMO_HOME` no esté definida. En macOS hace falta `brew install gettext`
 | 7 | Dream Environment + PPO | ✅ (3 modelos × 5 semillas) |
 | 8 | PPO directo en SUMO | ✅ (3 semillas) |
 | 9 | Evaluación final | ✅ |
-| 10 | Análisis y redacción | ✅ análisis (tablas y figuras); redacción pendiente |
+| 10 | Análisis y redacción | ✅ (artículo: `Articulo_WorldModels_LSTM_TSMixer_Transformer_SUMO_final.docx`) |
 
 ## Etapa 1 — escenario `urban7` (malla urbana irregular)
 

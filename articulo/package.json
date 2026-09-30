@@ -1,0 +1,6 @@
+{
+  "name": "articulo-world-model-semaforos",
+  "private": true,
+  "description": "Genera el artículo (.docx) a partir de results/",
+  "dependencies": { "docx": "^9.0.0" }
+}
