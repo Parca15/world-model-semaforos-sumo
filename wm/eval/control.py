@@ -42,13 +42,16 @@ def _statistics(path: Path) -> dict:
             "inserted": int(veh.get("inserted")), "backlog_end": int(veh.get("waiting"))}
 
 
-def run_episode(policy: Policy, demand: str, seed: int, policy_seed: int = 0) -> dict:
+def run_episode(policy: Policy, demand: str, seed: int, policy_seed: int = 0, gui: bool = False,
+                gui_args: tuple[str, ...] = ()) -> dict:
+    """Con `gui=True` el episodio se muestra en sumo-gui (mismas métricas; `gui_args`, p. ej. --delay)."""
     warmup = load_config("base")["env"]["warmup"]
     with tempfile.TemporaryDirectory() as tmp:
         trip, stats = Path(tmp) / "trip.xml", Path(tmp) / "stats.xml"
-        env = make_env(demand=demand, control=policy.control,
+        env = make_env(demand=demand, control=policy.control, gui=gui,
                        sumo_args=["--tripinfo-output", str(trip), "--statistic-output", str(stats),
-                                  "--device.emissions.probability", "1", "--duration-log.disable", "true"])
+                                  "--device.emissions.probability", "1", "--duration-log.disable", "true",
+                                  *gui_args])
         try:
             obs, info = env.reset(seed=seed)
             policy.reset(env, np.random.default_rng([seed, policy_seed, zlib.crc32(demand.encode())]))

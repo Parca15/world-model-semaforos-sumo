@@ -49,7 +49,8 @@ class TrafficEnvironment(gym.Env):
     metadata = {"render_modes": []}
 
     def __init__(self, demand: str = "D2", control: str = "agent", backend: str = "libsumo",
-                 episode_seconds: int | None = None, sumo_args: list[str] | None = None):
+                 episode_seconds: int | None = None, sumo_args: list[str] | None = None, gui: bool = False):
+        """`gui=True` abre sumo-gui para ver la simulación en tiempo real (solo con TraCI: libsumo no tiene GUI)."""
         assert control in ("agent", "fixed", "actuated")
         base, scen = load_config("base"), load_config("scenario")
         self.tls_ids: list[str] = base["network"]["tls_ids"]
@@ -60,7 +61,8 @@ class TrafficEnvironment(gym.Env):
         t = scen["tls"]
         self.yellow, self.all_red = t["yellow"], t["all_red"]
         self.min_green, self.max_green = t["min_green"], t["max_green"]
-        self.demand, self.control, self.backend = demand, control, backend
+        self.demand, self.control, self.gui = demand, control, gui
+        self.backend = "traci" if gui else backend
         self.net_name: str = scen["network"]["name"]
         self.extra_args = sumo_args or []
 
@@ -75,7 +77,7 @@ class TrafficEnvironment(gym.Env):
     def _start(self, seed: int) -> None:
         global _libsumo_in_use
         sumo_home()
-        cmd = [sumo_binary("sumo"), "-c", str(SUMO_DIR / f"{self.net_name}.sumocfg"),
+        cmd = [sumo_binary("sumo-gui" if self.gui else "sumo"), "-c", str(SUMO_DIR / f"{self.net_name}.sumocfg"),
                "-r", str(SUMO_DIR / f"routes_{self.demand}.rou.xml"),
                "--seed", str(seed), "--end", str(self.warmup + self.episode_seconds),
                "--waiting-time-memory", "100000", "--no-step-log", "true", "--no-warnings", "true",
